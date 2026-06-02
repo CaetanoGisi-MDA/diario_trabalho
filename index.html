@@ -588,8 +588,7 @@ async function loadFromGitHub() {
     }
     const json = await res.json();
     fileSha = json.sha;
-    const raw = atob(json.content.replace(/\n/g, ''));
-    const decoded = new TextDecoder().decode(new Uint8Array([...raw].map(c => c.charCodeAt(0))));
+    const decoded = decodeURIComponent(atob(json.content.replace(/\n/g, '')).split('').map(c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)).join(''));
     data = JSON.parse(decoded);
     setSyncStatus('ok', 'Sincronizado');
   } catch(e) {
