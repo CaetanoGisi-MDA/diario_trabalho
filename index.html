@@ -7,403 +7,187 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
 <style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#F5F2EC;--bg2:#EDEAE2;--bg3:#E3DFD5;--surface:#FDFCF9;
+  --border:rgba(60,55,40,0.12);--border2:rgba(60,55,40,0.22);
+  --text:#2A2720;--text2:#6B6558;--text3:#9E9789;
+  --accent:#8B6F47;--accent-bg:#F0E8DC;--accent-text:#5C4626;
+  --priv:#4A5568;--priv-bg:#EDF2F7;--priv-text:#2D3748;
+  --danger:#C0392B;--success:#2E7D52;
+  --sidebar-w:240px;--radius:10px;
+  --font-display:'DM Serif Display',Georgia,serif;
+  --font-body:'DM Sans',system-ui,sans-serif;
+}
+body{font-family:var(--font-body);background:var(--bg);color:var(--text);min-height:100vh;font-size:15px;line-height:1.6}
 
-  :root {
-    --bg: #F5F2EC;
-    --bg2: #EDEAE2;
-    --bg3: #E3DFD5;
-    --surface: #FDFCF9;
-    --border: rgba(60,55,40,0.12);
-    --border2: rgba(60,55,40,0.22);
-    --text: #2A2720;
-    --text2: #6B6558;
-    --text3: #9E9789;
-    --accent: #8B6F47;
-    --accent-bg: #F0E8DC;
-    --accent-text: #5C4626;
-    --priv: #4A5568;
-    --priv-bg: #EDF2F7;
-    --priv-text: #2D3748;
-    --danger: #C0392B;
-    --success: #2E7D52;
-    --sidebar-w: 240px;
-    --radius: 10px;
-    --font-display: 'DM Serif Display', Georgia, serif;
-    --font-body: 'DM Sans', system-ui, sans-serif;
-  }
+/* SETUP */
+#setup-screen{position:fixed;inset:0;background:var(--bg);display:flex;align-items:center;justify-content:center;z-index:1000;padding:2rem}
+#setup-screen.hidden{display:none}
+.setup-card{background:var(--surface);border:1px solid var(--border2);border-radius:16px;padding:2.5rem;max-width:480px;width:100%}
+.setup-card h1{font-family:var(--font-display);font-size:1.8rem;margin-bottom:.5rem}
+.setup-card p{color:var(--text2);font-size:14px;margin-bottom:1.5rem;line-height:1.7}
+.setup-card label{display:block;font-size:13px;font-weight:500;color:var(--text2);margin-bottom:6px}
+.setup-card input{width:100%;padding:10px 12px;border:1px solid var(--border2);border-radius:var(--radius);background:var(--bg);font-family:var(--font-body);font-size:14px;color:var(--text);margin-bottom:1rem;outline:none;transition:border-color .15s}
+.setup-card input:focus{border-color:var(--accent)}
+.setup-card .help{font-size:12px;color:var(--text3);background:var(--bg2);border-radius:8px;padding:10px 12px;margin-bottom:1.5rem;line-height:1.6}
+.setup-card .help a{color:var(--accent)}
+.btn-primary{background:var(--accent);color:#fff;border:none;border-radius:var(--radius);padding:11px 20px;font-family:var(--font-body);font-size:14px;font-weight:500;cursor:pointer;width:100%;transition:opacity .15s}
+.btn-primary:hover{opacity:.88}
 
-  body {
-    font-family: var(--font-body);
-    background: var(--bg);
-    color: var(--text);
-    min-height: 100vh;
-    font-size: 15px;
-    line-height: 1.6;
-  }
+/* LAYOUT */
+#app{display:flex;height:100vh;overflow:hidden}
+#app.hidden{display:none}
 
-  /* SETUP SCREEN */
-  #setup-screen {
-    position: fixed; inset: 0;
-    background: var(--bg);
-    display: flex; align-items: center; justify-content: center;
-    z-index: 1000;
-    padding: 2rem;
-  }
-  #setup-screen.hidden { display: none; }
-  .setup-card {
-    background: var(--surface);
-    border: 1px solid var(--border2);
-    border-radius: 16px;
-    padding: 2.5rem;
-    max-width: 480px;
-    width: 100%;
-  }
-  .setup-card h1 {
-    font-family: var(--font-display);
-    font-size: 1.8rem;
-    margin-bottom: 0.5rem;
-    color: var(--text);
-  }
-  .setup-card p { color: var(--text2); font-size: 14px; margin-bottom: 1.5rem; line-height: 1.7; }
-  .setup-card label { display: block; font-size: 13px; font-weight: 500; color: var(--text2); margin-bottom: 6px; }
-  .setup-card input {
-    width: 100%; padding: 10px 12px;
-    border: 1px solid var(--border2);
-    border-radius: var(--radius);
-    background: var(--bg);
-    font-family: var(--font-body);
-    font-size: 14px; color: var(--text);
-    margin-bottom: 1rem;
-    outline: none;
-    transition: border-color .15s;
-  }
-  .setup-card input:focus { border-color: var(--accent); }
-  .setup-card .help {
-    font-size: 12px; color: var(--text3);
-    background: var(--bg2);
-    border-radius: 8px; padding: 10px 12px;
-    margin-bottom: 1.5rem; line-height: 1.6;
-  }
-  .setup-card .help a { color: var(--accent); }
-  .btn-primary {
-    background: var(--accent); color: #fff;
-    border: none; border-radius: var(--radius);
-    padding: 11px 20px; font-family: var(--font-body);
-    font-size: 14px; font-weight: 500;
-    cursor: pointer; width: 100%;
-    transition: opacity .15s;
-  }
-  .btn-primary:hover { opacity: .88; }
+/* SIDEBAR */
+aside{width:var(--sidebar-w);min-width:var(--sidebar-w);background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden}
+.sidebar-header{padding:1.25rem 1.1rem 1rem;border-bottom:1px solid var(--border)}
+.sidebar-header h2{font-family:var(--font-display);font-size:1.1rem;font-weight:400;color:var(--text);margin-bottom:2px}
+.sidebar-header span{font-size:12px;color:var(--text3)}
+.btn-new-day{margin:.9rem 1.1rem 0;display:flex;align-items:center;gap:6px;background:var(--accent-bg);color:var(--accent-text);border:1px solid rgba(139,111,71,.25);border-radius:var(--radius);padding:8px 12px;font-family:var(--font-body);font-size:13px;font-weight:500;cursor:pointer;transition:background .15s}
+.btn-new-day:hover{background:#e8dccf}
+.btn-new-day svg{width:14px;height:14px;flex-shrink:0}
+.month-group{padding:0 0 .5rem}
+.month-label{font-size:11px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:var(--text3);padding:.9rem 1.1rem .35rem}
+.day-item{display:flex;align-items:center;justify-content:space-between;padding:7px 1.1rem;cursor:pointer;transition:background .1s;gap:6px}
+.day-item:hover{background:var(--bg2)}
+.day-item.active{background:var(--accent-bg)}
+.day-item .di-date{font-size:13px;color:var(--text);flex:1}
+.day-item.active .di-date{color:var(--accent-text);font-weight:500}
+.day-item .di-count{font-size:11px;color:var(--text3);background:var(--bg2);border-radius:20px;padding:1px 7px}
+.day-item.active .di-count{background:rgba(139,111,71,.18);color:var(--accent)}
+.sidebar-scroll{overflow-y:auto;flex:1}
+.sidebar-scroll::-webkit-scrollbar{width:4px}
+.sidebar-scroll::-webkit-scrollbar-thumb{background:var(--border2);border-radius:4px}
+.sidebar-footer{border-top:1px solid var(--border);padding:.75rem 1.1rem;display:flex;gap:6px;flex-wrap:wrap}
+.btn-sm{font-size:11px;color:var(--text2);background:transparent;border:1px solid var(--border2);border-radius:7px;padding:5px 9px;cursor:pointer;font-family:var(--font-body);transition:background .12s;display:flex;align-items:center;gap:4px}
+.btn-sm:hover{background:var(--bg2)}
+.btn-sm svg{width:12px;height:12px}
+.sync-status{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--text3);padding:.5rem 1.1rem;border-top:1px solid var(--border)}
+.sync-dot{width:7px;height:7px;border-radius:50%;background:var(--text3);flex-shrink:0;transition:background .3s}
+.sync-dot.ok{background:var(--success)}
+.sync-dot.err{background:var(--danger)}
+.sync-dot.loading{background:var(--accent);animation:pulse 1s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
 
-  /* LAYOUT */
-  #app { display: flex; height: 100vh; overflow: hidden; }
-  #app.hidden { display: none; }
+/* MAIN */
+main{flex:1;overflow-y:auto;padding:2rem 2.5rem;background:var(--bg)}
+main::-webkit-scrollbar{width:4px}
+main::-webkit-scrollbar-thumb{background:var(--border2);border-radius:4px}
+.main-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;color:var(--text3);text-align:center;gap:1rem}
+.main-empty svg{width:48px;height:48px;opacity:.3}
+.main-empty h3{font-family:var(--font-display);font-size:1.4rem;color:var(--text2);font-weight:400}
+.main-empty p{font-size:14px;max-width:280px;line-height:1.7}
+.day-header{display:flex;align-items:flex-start;justify-content:space-between;gap:1rem;margin-bottom:1.75rem;flex-wrap:wrap}
+.day-title{font-family:var(--font-display);font-size:1.7rem;font-weight:400;color:var(--text)}
+.day-subtitle{font-size:13px;color:var(--text3);margin-top:2px}
+.day-actions{display:flex;gap:6px;flex-wrap:wrap;align-items:flex-start}
 
-  /* SIDEBAR */
-  aside {
-    width: var(--sidebar-w);
-    min-width: var(--sidebar-w);
-    background: var(--surface);
-    border-right: 1px solid var(--border);
-    display: flex; flex-direction: column;
-    overflow: hidden;
-  }
-  .sidebar-header {
-    padding: 1.25rem 1.1rem 1rem;
-    border-bottom: 1px solid var(--border);
-  }
-  .sidebar-header h2 {
-    font-family: var(--font-display);
-    font-size: 1.1rem; font-weight: 400;
-    color: var(--text); margin-bottom: 2px;
-  }
-  .sidebar-header span { font-size: 12px; color: var(--text3); }
-  .btn-new-day {
-    margin: 0.9rem 1.1rem 0;
-    display: flex; align-items: center; gap: 6px;
-    background: var(--accent-bg); color: var(--accent-text);
-    border: 1px solid rgba(139,111,71,0.25);
-    border-radius: var(--radius); padding: 8px 12px;
-    font-family: var(--font-body); font-size: 13px; font-weight: 500;
-    cursor: pointer; transition: background .15s;
-  }
-  .btn-new-day:hover { background: #e8dccf; }
-  .btn-new-day svg { width: 14px; height: 14px; flex-shrink: 0; }
+/* AÇÃO TAG */
+.acao-tag{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:500;padding:2px 9px;border-radius:20px;margin-bottom:7px}
+.acao-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
 
-  .month-group { padding: 0 0 0.5rem; }
-  .month-label {
-    font-size: 11px; font-weight: 500; letter-spacing: .08em;
-    text-transform: uppercase; color: var(--text3);
-    padding: 0.9rem 1.1rem 0.35rem;
-  }
-  .day-item {
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 7px 1.1rem; cursor: pointer;
-    transition: background .1s; border-radius: 0;
-    gap: 6px;
-  }
-  .day-item:hover { background: var(--bg2); }
-  .day-item.active { background: var(--accent-bg); }
-  .day-item .di-date { font-size: 13px; color: var(--text); flex: 1; }
-  .day-item.active .di-date { color: var(--accent-text); font-weight: 500; }
-  .day-item .di-count {
-    font-size: 11px; color: var(--text3);
-    background: var(--bg2); border-radius: 20px;
-    padding: 1px 7px;
-  }
-  .day-item.active .di-count { background: rgba(139,111,71,0.18); color: var(--accent); }
+/* ENTRY CARD */
+.entry-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:1.1rem 1.25rem 1rem;margin-bottom:1rem;transition:border-color .15s;position:relative}
+.entry-card:hover{border-color:var(--border2)}
+.entry-card-header{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:.5rem}
+.entry-title{font-size:15px;font-weight:500;color:var(--text);flex:1}
+.entry-actions{display:flex;gap:4px;flex-shrink:0}
+.icon-btn{background:transparent;border:none;cursor:pointer;color:var(--text3);padding:3px;border-radius:5px;display:flex;transition:color .12s,background .12s}
+.icon-btn:hover{color:var(--text);background:var(--bg2)}
+.icon-btn svg{width:15px;height:15px}
+.icon-btn.danger:hover{color:var(--danger);background:#fdf0ee}
+.entry-desc{font-size:14px;color:var(--text2);line-height:1.65}
+.priv-note{margin-top:.75rem;background:var(--priv-bg);border-left:3px solid #A0AEC0;padding:7px 10px;font-size:13px;color:var(--priv-text);font-style:italic;display:none;align-items:flex-start;gap:6px}
+.priv-note.visible{display:flex}
+.priv-note svg{width:13px;height:13px;flex-shrink:0;margin-top:2px;color:var(--priv)}
+.priv-toggle{margin-top:7px;font-size:12px;color:var(--text3);cursor:pointer;background:transparent;border:none;font-family:var(--font-body);padding:0;display:flex;align-items:center;gap:4px;transition:color .12s}
+.priv-toggle:hover{color:var(--text2)}
+.priv-toggle svg{width:12px;height:12px}
+.btn-add-entry{margin-top:.25rem;display:flex;align-items:center;gap:6px;background:transparent;color:var(--text3);border:1px dashed var(--border2);border-radius:var(--radius);padding:10px 14px;font-family:var(--font-body);font-size:13px;cursor:pointer;width:100%;transition:color .15s,border-color .15s,background .15s}
+.btn-add-entry:hover{color:var(--text);background:var(--surface)}
+.btn-add-entry svg{width:14px;height:14px}
 
-  .sidebar-scroll { overflow-y: auto; flex: 1; }
-  .sidebar-scroll::-webkit-scrollbar { width: 4px; }
-  .sidebar-scroll::-webkit-scrollbar-track { background: transparent; }
-  .sidebar-scroll::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 4px; }
+/* PLANOS VIEW */
+.planos-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem}
+.planos-header h2{font-family:var(--font-display);font-size:1.5rem;font-weight:400}
+.plano-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:1.1rem 1.25rem;margin-bottom:1rem}
+.plano-card-header{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:.75rem}
+.plano-nome{font-size:15px;font-weight:500}
+.plano-periodo{font-size:12px;color:var(--text3);margin-top:2px}
+.acoes-list{display:flex;flex-direction:column;gap:6px}
+.acao-item{display:flex;align-items:center;gap:8px;padding:6px 10px;background:var(--bg);border-radius:8px;border:1px solid var(--border)}
+.acao-color-dot{width:12px;height:12px;border-radius:50%;flex-shrink:0;border:1px solid rgba(0,0,0,.1)}
+.acao-nome{font-size:13px;flex:1}
+.btn-add-acao{margin-top:8px;font-size:12px;color:var(--text3);background:transparent;border:1px dashed var(--border2);border-radius:8px;padding:6px 12px;cursor:pointer;font-family:var(--font-body);display:flex;align-items:center;gap:4px;transition:color .15s}
+.btn-add-acao:hover{color:var(--text)}
+.btn-add-acao svg{width:12px;height:12px}
 
-  .sidebar-footer {
-    border-top: 1px solid var(--border);
-    padding: 0.75rem 1.1rem;
-    display: flex; gap: 6px; flex-wrap: wrap;
-  }
-  .btn-sm {
-    font-size: 11px; color: var(--text2);
-    background: transparent; border: 1px solid var(--border2);
-    border-radius: 7px; padding: 5px 9px;
-    cursor: pointer; font-family: var(--font-body);
-    transition: background .12s;
-    display: flex; align-items: center; gap: 4px;
-  }
-  .btn-sm:hover { background: var(--bg2); }
-  .btn-sm svg { width: 12px; height: 12px; }
+/* COLOR PICKER */
+.color-swatches{display:flex;gap:6px;flex-wrap:wrap;margin-top:4px}
+.swatch{width:22px;height:22px;border-radius:50%;cursor:pointer;border:2px solid transparent;transition:transform .1s}
+.swatch:hover{transform:scale(1.15)}
+.swatch.selected{border-color:var(--text)}
 
-  /* MAIN */
-  main {
-    flex: 1; overflow-y: auto;
-    padding: 2rem 2.5rem;
-    background: var(--bg);
-  }
-  main::-webkit-scrollbar { width: 4px; }
-  main::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 4px; }
+/* MODAL */
+.modal-overlay{position:fixed;inset:0;background:rgba(42,39,32,.45);z-index:500;display:flex;align-items:center;justify-content:center;padding:1rem}
+.modal-overlay.hidden{display:none}
+.modal{background:var(--surface);border-radius:14px;border:1px solid var(--border2);padding:1.75rem;width:100%;max-width:520px;max-height:90vh;overflow-y:auto}
+.modal h3{font-family:var(--font-display);font-size:1.2rem;font-weight:400;margin-bottom:1.25rem;color:var(--text)}
+.field{margin-bottom:1rem}
+.field label{display:block;font-size:12px;font-weight:500;color:var(--text2);margin-bottom:5px;letter-spacing:.02em}
+.field input,.field textarea,.field select{width:100%;padding:9px 11px;border:1px solid var(--border2);border-radius:8px;background:var(--bg);font-family:var(--font-body);font-size:14px;color:var(--text);outline:none;resize:vertical;line-height:1.5;transition:border-color .15s}
+.field input:focus,.field textarea:focus,.field select:focus{border-color:var(--accent)}
+.field textarea{min-height:80px}
+.priv-field textarea{background:var(--priv-bg);font-style:italic;color:var(--priv-text)}
+.priv-field label{color:var(--priv)}
+.priv-hint{font-size:11px;color:var(--text3);margin-top:4px}
+.modal-actions{display:flex;gap:8px;margin-top:1.5rem;justify-content:flex-end}
+.btn-cancel{background:transparent;border:1px solid var(--border2);border-radius:8px;padding:9px 16px;font-family:var(--font-body);font-size:13px;color:var(--text2);cursor:pointer;transition:background .12s}
+.btn-cancel:hover{background:var(--bg2)}
+.btn-save{background:var(--accent);color:#fff;border:none;border-radius:8px;padding:9px 18px;font-family:var(--font-body);font-size:13px;font-weight:500;cursor:pointer;transition:opacity .15s}
+.btn-save:hover{opacity:.88}
 
-  .main-empty {
-    display: flex; flex-direction: column;
-    align-items: center; justify-content: center;
-    height: 100%; color: var(--text3);
-    text-align: center; gap: 1rem;
-  }
-  .main-empty svg { width: 48px; height: 48px; opacity: .3; }
-  .main-empty h3 { font-family: var(--font-display); font-size: 1.4rem; color: var(--text2); font-weight: 400; }
-  .main-empty p { font-size: 14px; max-width: 280px; line-height: 1.7; }
+/* EXPORT */
+.export-preview{background:var(--bg2);border-radius:8px;padding:1rem;font-size:13px;color:var(--text2);white-space:pre-wrap;line-height:1.7;max-height:320px;overflow-y:auto;font-family:var(--font-body);border:1px solid var(--border);margin-bottom:1rem}
+.export-options{display:flex;gap:8px;margin-bottom:1rem;flex-wrap:wrap}
+.radio-btn{display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer;padding:7px 12px;border:1px solid var(--border2);border-radius:8px;transition:background .12s}
+.radio-btn:hover{background:var(--bg2)}
+.radio-btn input{accent-color:var(--accent)}
 
-  .day-header {
-    display: flex; align-items: flex-start;
-    justify-content: space-between; gap: 1rem;
-    margin-bottom: 1.75rem; flex-wrap: wrap;
-  }
-  .day-title { font-family: var(--font-display); font-size: 1.7rem; font-weight: 400; color: var(--text); }
-  .day-subtitle { font-size: 13px; color: var(--text3); margin-top: 2px; }
-  .day-actions { display: flex; gap: 6px; flex-wrap: wrap; align-items: flex-start; }
+/* ACAO SELECT */
+.acao-select-option{display:flex;align-items:center;gap:8px}
 
-  /* ENTRY CARD */
-  .entry-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 1.1rem 1.25rem 1rem;
-    margin-bottom: 1rem;
-    transition: border-color .15s;
-    position: relative;
-  }
-  .entry-card:hover { border-color: var(--border2); }
-  .entry-card-header {
-    display: flex; align-items: flex-start;
-    justify-content: space-between; gap: 10px;
-    margin-bottom: 0.5rem;
-  }
-  .entry-title { font-size: 15px; font-weight: 500; color: var(--text); flex: 1; }
-  .entry-actions { display: flex; gap: 4px; flex-shrink: 0; }
-  .icon-btn {
-    background: transparent; border: none; cursor: pointer;
-    color: var(--text3); padding: 3px;
-    border-radius: 5px; display: flex;
-    transition: color .12s, background .12s;
-  }
-  .icon-btn:hover { color: var(--text); background: var(--bg2); }
-  .icon-btn svg { width: 15px; height: 15px; }
-  .icon-btn.danger:hover { color: var(--danger); background: #fdf0ee; }
+/* STATUS */
+#status-bar{position:fixed;bottom:1.25rem;right:1.5rem;background:var(--text);color:var(--bg);border-radius:8px;padding:8px 14px;font-size:12px;z-index:900;opacity:0;transform:translateY(6px);transition:opacity .2s,transform .2s;pointer-events:none}
+#status-bar.show{opacity:1;transform:translateY(0)}
+#status-bar.error{background:var(--danger)}
+#status-bar.success{background:var(--success)}
 
-  .entry-desc { font-size: 14px; color: var(--text2); line-height: 1.65; }
+/* NAV TABS */
+.nav-tabs{display:flex;gap:2px;padding:.6rem 1.1rem .5rem;border-bottom:1px solid var(--border)}
+.nav-tab{font-size:12px;padding:5px 10px;border-radius:7px;cursor:pointer;color:var(--text2);background:transparent;border:none;font-family:var(--font-body);transition:background .12s,color .12s}
+.nav-tab:hover{background:var(--bg2)}
+.nav-tab.active{background:var(--accent-bg);color:var(--accent-text);font-weight:500}
 
-  .priv-note {
-    margin-top: 0.75rem;
-    background: var(--priv-bg);
-    border-left: 3px solid #A0AEC0;
-    border-radius: 0;
-    padding: 7px 10px;
-    font-size: 13px; color: var(--priv-text);
-    font-style: italic; display: none;
-    align-items: flex-start; gap: 6px;
-  }
-  .priv-note.visible { display: flex; }
-  .priv-note svg { width: 13px; height: 13px; flex-shrink: 0; margin-top: 2px; color: var(--priv); }
-  .priv-toggle {
-    margin-top: 7px; font-size: 12px; color: var(--text3);
-    cursor: pointer; background: transparent; border: none;
-    font-family: var(--font-body); padding: 0;
-    display: flex; align-items: center; gap: 4px;
-    transition: color .12s;
-  }
-  .priv-toggle:hover { color: var(--text2); }
-  .priv-toggle svg { width: 12px; height: 12px; }
-
-  .btn-add-entry {
-    margin-top: 0.25rem;
-    display: flex; align-items: center; gap: 6px;
-    background: transparent; color: var(--text3);
-    border: 1px dashed var(--border2);
-    border-radius: var(--radius); padding: 10px 14px;
-    font-family: var(--font-body); font-size: 13px;
-    cursor: pointer; width: 100%;
-    transition: color .15s, border-color .15s, background .15s;
-  }
-  .btn-add-entry:hover { color: var(--text); border-color: var(--border2); background: var(--surface); }
-  .btn-add-entry svg { width: 14px; height: 14px; }
-
-  /* MODAL */
-  .modal-overlay {
-    position: fixed; inset: 0;
-    background: rgba(42,39,32,0.45);
-    z-index: 500;
-    display: flex; align-items: center; justify-content: center;
-    padding: 1rem;
-  }
-  .modal-overlay.hidden { display: none; }
-  .modal {
-    background: var(--surface);
-    border-radius: 14px;
-    border: 1px solid var(--border2);
-    padding: 1.75rem;
-    width: 100%; max-width: 520px;
-    max-height: 90vh; overflow-y: auto;
-  }
-  .modal h3 {
-    font-family: var(--font-display); font-size: 1.2rem; font-weight: 400;
-    margin-bottom: 1.25rem; color: var(--text);
-  }
-  .field { margin-bottom: 1rem; }
-  .field label { display: block; font-size: 12px; font-weight: 500; color: var(--text2); margin-bottom: 5px; letter-spacing: .02em; }
-  .field input, .field textarea {
-    width: 100%; padding: 9px 11px;
-    border: 1px solid var(--border2); border-radius: 8px;
-    background: var(--bg); font-family: var(--font-body);
-    font-size: 14px; color: var(--text); outline: none;
-    resize: vertical; line-height: 1.5;
-    transition: border-color .15s;
-  }
-  .field input:focus, .field textarea:focus { border-color: var(--accent); }
-  .field textarea { min-height: 80px; }
-  .priv-field textarea {
-    background: var(--priv-bg);
-    font-style: italic; color: var(--priv-text);
-  }
-  .priv-field label { color: var(--priv); }
-  .priv-hint { font-size: 11px; color: var(--text3); margin-top: 4px; }
-  .modal-actions { display: flex; gap: 8px; margin-top: 1.5rem; justify-content: flex-end; }
-  .btn-cancel {
-    background: transparent; border: 1px solid var(--border2);
-    border-radius: 8px; padding: 9px 16px;
-    font-family: var(--font-body); font-size: 13px;
-    color: var(--text2); cursor: pointer;
-    transition: background .12s;
-  }
-  .btn-cancel:hover { background: var(--bg2); }
-  .btn-save {
-    background: var(--accent); color: #fff;
-    border: none; border-radius: 8px; padding: 9px 18px;
-    font-family: var(--font-body); font-size: 13px; font-weight: 500;
-    cursor: pointer; transition: opacity .15s;
-  }
-  .btn-save:hover { opacity: .88; }
-
-  /* STATUS BAR */
-  #status-bar {
-    position: fixed; bottom: 1.25rem; right: 1.5rem;
-    background: var(--text); color: var(--bg);
-    border-radius: 8px; padding: 8px 14px;
-    font-size: 12px; z-index: 900;
-    opacity: 0; transform: translateY(6px);
-    transition: opacity .2s, transform .2s;
-    pointer-events: none;
-  }
-  #status-bar.show { opacity: 1; transform: translateY(0); }
-  #status-bar.error { background: var(--danger); }
-  #status-bar.success { background: var(--success); }
-
-  /* EXPORT MODAL */
-  .export-preview {
-    background: var(--bg2); border-radius: 8px;
-    padding: 1rem; font-size: 13px; color: var(--text2);
-    white-space: pre-wrap; line-height: 1.7;
-    max-height: 320px; overflow-y: auto;
-    font-family: var(--font-body);
-    border: 1px solid var(--border);
-    margin-bottom: 1rem;
-  }
-  .sync-status {
-    display: flex; align-items: center; gap: 5px;
-    font-size: 11px; color: var(--text3);
-    padding: 0.5rem 1.1rem;
-    border-top: 1px solid var(--border);
-  }
-  .sync-dot {
-    width: 7px; height: 7px; border-radius: 50%;
-    background: var(--text3); flex-shrink: 0;
-    transition: background .3s;
-  }
-  .sync-dot.ok { background: var(--success); }
-  .sync-dot.err { background: var(--danger); }
-  .sync-dot.loading { background: var(--accent); animation: pulse 1s infinite; }
-  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
-
-  /* RESPONSIVE */
-  @media (max-width: 600px) {
-    :root { --sidebar-w: 200px; }
-    main { padding: 1.25rem 1rem; }
-    .day-title { font-size: 1.3rem; }
-  }
-  @media (max-width: 480px) {
-    #app { flex-direction: column; }
-    aside { width: 100%; min-width: 0; height: auto; max-height: 42vh; border-right: none; border-bottom: 1px solid var(--border); }
-    main { padding: 1rem; }
-  }
+@media(max-width:600px){:root{--sidebar-w:200px}main{padding:1.25rem 1rem}.day-title{font-size:1.3rem}}
+@media(max-width:480px){#app{flex-direction:column}aside{width:100%;min-width:0;height:auto;max-height:42vh;border-right:none;border-bottom:1px solid var(--border)}main{padding:1rem}}
 </style>
 </head>
 <body>
 
-<!-- SETUP SCREEN -->
+<!-- SETUP -->
 <div id="setup-screen">
   <div class="setup-card">
     <h1>Diário de Trabalho</h1>
-    <p>Para sincronizar seus registros entre dispositivos, informe seu repositório GitHub e um token de acesso pessoal. Isso é feito uma única vez.</p>
-
-    <div class="field">
-      <label>Usuário do GitHub</label>
-      <input type="text" id="cfg-user" placeholder="seunome" autocomplete="off" spellcheck="false">
-    </div>
-    <div class="field">
-      <label>Nome do repositório</label>
-      <input type="text" id="cfg-repo" placeholder="diario-trabalho" autocomplete="off" spellcheck="false">
-    </div>
-    <div class="field">
-      <label>Personal Access Token</label>
-      <input type="password" id="cfg-token" placeholder="ghp_xxxxxxxxxxxx" autocomplete="off">
-    </div>
-
+    <p>Configure o repositório GitHub para sincronizar seus registros entre dispositivos.</p>
+    <div class="field"><label>Usuário do GitHub</label><input type="text" id="cfg-user" placeholder="seunome" autocomplete="off" spellcheck="false"></div>
+    <div class="field"><label>Nome do repositório</label><input type="text" id="cfg-repo" placeholder="diario-trabalho" autocomplete="off" spellcheck="false"></div>
+    <div class="field"><label>Personal Access Token</label><input type="password" id="cfg-token" placeholder="ghp_xxxxxxxxxxxx" autocomplete="off"></div>
     <div class="help">
-      Para criar o token: <strong>GitHub → Settings → Developer settings → Personal access tokens → Tokens (classic)</strong><br>
-      Marque apenas a permissão <strong>repo</strong>. Copie e cole aqui.<br>
-      <a href="https://github.com/settings/tokens/new" target="_blank">Abrir gerador de token →</a>
+      <strong>GitHub → Settings → Developer settings → Personal access tokens → Tokens (classic)</strong><br>
+      Marque apenas <strong>repo</strong>. <a href="https://github.com/settings/tokens/new" target="_blank">Abrir gerador →</a>
     </div>
-
     <button class="btn-primary" onclick="saveConfig()">Salvar e entrar</button>
   </div>
 </div>
@@ -415,7 +199,11 @@
       <h2>Diário</h2>
       <span id="sidebar-user"></span>
     </div>
-    <button class="btn-new-day" onclick="openNewDayModal()">
+    <div class="nav-tabs">
+      <button class="nav-tab active" onclick="setView('diario')">Registros</button>
+      <button class="nav-tab" onclick="setView('planos')">Planos</button>
+    </div>
+    <button class="btn-new-day" id="btn-novo" onclick="openNewDayModal()">
       <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
       Novo registro
     </button>
@@ -441,16 +229,30 @@
   </aside>
 
   <main id="main-area">
-    <div class="main-empty" id="empty-state">
-      <svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
-      <h3>Nenhum registro ainda</h3>
-      <p>Clique em "Novo registro" para começar a documentar seu dia.</p>
+    <!-- DIÁRIO VIEW -->
+    <div id="view-diario">
+      <div class="main-empty" id="empty-state">
+        <svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
+        <h3>Nenhum registro ainda</h3>
+        <p>Clique em "Novo registro" para começar a documentar seu dia.</p>
+      </div>
+      <div id="day-view" style="display:none"></div>
     </div>
-    <div id="day-view" style="display:none"></div>
+    <!-- PLANOS VIEW -->
+    <div id="view-planos" style="display:none">
+      <div class="planos-header">
+        <h2>Planos de Trabalho</h2>
+        <button class="btn-sm" onclick="openPlanoModal()">
+          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+          Novo plano
+        </button>
+      </div>
+      <div id="planos-list"></div>
+    </div>
   </main>
 </div>
 
-<!-- MODAL: NOVA ENTRADA -->
+<!-- MODAL: ENTRY -->
 <div class="modal-overlay hidden" id="entry-modal">
   <div class="modal">
     <h3 id="modal-title">Nova atividade</h3>
@@ -459,7 +261,11 @@
       <input type="text" id="entry-titulo" placeholder="Ex: Reunião de alinhamento semanal">
     </div>
     <div class="field">
-      <label>Descrição <span style="font-weight:300;color:var(--text3)">(pública — aparece no relatório)</span></label>
+      <label>Ação do plano de trabalho</label>
+      <select id="entry-acao"></select>
+    </div>
+    <div class="field">
+      <label>Descrição <span style="font-weight:300;color:var(--text3)">(pública)</span></label>
       <textarea id="entry-desc" placeholder="Descreva o que foi realizado de forma objetiva…"></textarea>
     </div>
     <div class="field priv-field">
@@ -467,8 +273,8 @@
         <svg style="width:12px;height:12px;vertical-align:-1px;margin-right:3px" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
         Nota privada <span style="font-weight:300;color:var(--text3)">(só você vê)</span>
       </label>
-      <textarea id="entry-nota" placeholder="Lembretes, contexto, observações para uso próprio…" style="min-height:60px"></textarea>
-      <div class="priv-hint">Esta nota não aparece no relatório de chefia.</div>
+      <textarea id="entry-nota" placeholder="Lembretes, contexto, observações…" style="min-height:60px"></textarea>
+      <div class="priv-hint">Não aparece no relatório.</div>
     </div>
     <div class="modal-actions">
       <button class="btn-cancel" onclick="closeEntryModal()">Cancelar</button>
@@ -481,10 +287,7 @@
 <div class="modal-overlay hidden" id="day-modal">
   <div class="modal">
     <h3>Selecionar data</h3>
-    <div class="field">
-      <label>Data do registro</label>
-      <input type="date" id="new-day-date">
-    </div>
+    <div class="field"><label>Data do registro</label><input type="date" id="new-day-date"></div>
     <div class="modal-actions">
       <button class="btn-cancel" onclick="document.getElementById('day-modal').classList.add('hidden')">Cancelar</button>
       <button class="btn-save" onclick="createDay()">Criar</button>
@@ -492,14 +295,49 @@
   </div>
 </div>
 
-<!-- MODAL: EXPORTAR -->
+<!-- MODAL: PLANO -->
+<div class="modal-overlay hidden" id="plano-modal">
+  <div class="modal">
+    <h3 id="plano-modal-title">Novo plano de trabalho</h3>
+    <div class="field"><label>Nome do plano</label><input type="text" id="plano-nome" placeholder="Ex: Plano 1º Semestre 2026"></div>
+    <div style="display:flex;gap:10px">
+      <div class="field" style="flex:1"><label>Início</label><input type="date" id="plano-inicio"></div>
+      <div class="field" style="flex:1"><label>Fim</label><input type="date" id="plano-fim"></div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="document.getElementById('plano-modal').classList.add('hidden')">Cancelar</button>
+      <button class="btn-save" onclick="savePlano()">Salvar</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: AÇÃO -->
+<div class="modal-overlay hidden" id="acao-modal">
+  <div class="modal">
+    <h3 id="acao-modal-title">Nova ação</h3>
+    <div class="field"><label>Nome da ação</label><input type="text" id="acao-nome" placeholder="Ex: Produção de protótipo de IA"></div>
+    <div class="field">
+      <label>Cor de identificação</label>
+      <div class="color-swatches" id="color-swatches"></div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="document.getElementById('acao-modal').classList.add('hidden')">Cancelar</button>
+      <button class="btn-save" onclick="saveAcao()">Salvar</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: EXPORT -->
 <div class="modal-overlay hidden" id="export-modal">
   <div class="modal">
     <h3>Exportar relatório</h3>
     <div class="field">
       <label>Período</label>
-      <select id="export-month" style="width:100%;padding:9px 11px;border:1px solid var(--border2);border-radius:8px;background:var(--bg);font-family:var(--font-body);font-size:14px;color:var(--text);outline:none;">
-      </select>
+      <select id="export-month"></select>
+    </div>
+    <div class="export-options">
+      <label class="radio-btn"><input type="radio" name="export-order" value="data" checked onchange="updateExportPreview()"> Por data</label>
+      <label class="radio-btn"><input type="radio" name="export-order" value="acao" onchange="updateExportPreview()"> Por ação do plano</label>
     </div>
     <div class="export-preview" id="export-preview"></div>
     <div class="modal-actions">
@@ -509,27 +347,45 @@
   </div>
 </div>
 
-<!-- STATUS BAR -->
 <div id="status-bar"></div>
 
 <script>
-// ─── STATE ───────────────────────────────────────────────────────────────────
+// ─── COLORS ──────────────────────────────────────────────────────────────────
+const COLORS = [
+  {hex:'#4A90D9',label:'Azul'},
+  {hex:'#7B68EE',label:'Violeta'},
+  {hex:'#E67E22',label:'Laranja'},
+  {hex:'#27AE60',label:'Verde'},
+  {hex:'#E74C3C',label:'Vermelho'},
+  {hex:'#16A085',label:'Teal'},
+  {hex:'#8E44AD',label:'Roxo'},
+  {hex:'#F39C12',label:'Amarelo'},
+  {hex:'#2C3E50',label:'Azul escuro'},
+  {hex:'#C0392B',label:'Carmim'},
+  {hex:'#1ABC9C',label:'Esmeralda'},
+  {hex:'#D35400',label:'Tijolo'},
+];
+const AVULSA_ID = '__avulsa__';
+let selectedColor = COLORS[0].hex;
+
+// ─── STATE ────────────────────────────────────────────────────────────────────
 let cfg = {};
-let data = { days: {} };
+let data = { days: {}, planos: [] };
 let activeDayId = null;
 let editingEntryId = null;
 let editingDayId = null;
+let editingPlanoId = null;
+let editingAcaoPlanoId = null;
+let editingAcaoId = null;
 let fileSha = null;
-
+let currentView = 'diario';
 const FILENAME = 'diario-data.json';
 
-// ─── INIT ────────────────────────────────────────────────────────────────────
+// ─── INIT ─────────────────────────────────────────────────────────────────────
 window.addEventListener('DOMContentLoaded', () => {
   const saved = localStorage.getItem('dt_config');
-  if (saved) {
-    cfg = JSON.parse(saved);
-    startApp();
-  }
+  if (saved) { cfg = JSON.parse(saved); startApp(); }
+  buildColorSwatches();
 });
 
 function saveConfig() {
@@ -551,51 +407,51 @@ async function startApp() {
   renderSidebar();
 }
 
-// ─── GITHUB API ──────────────────────────────────────────────────────────────
+// ─── VIEWS ────────────────────────────────────────────────────────────────────
+function setView(v) {
+  currentView = v;
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+  event.target.classList.add('active');
+  document.getElementById('view-diario').style.display = v === 'diario' ? '' : 'none';
+  document.getElementById('view-planos').style.display = v === 'planos' ? '' : 'none';
+  document.getElementById('btn-novo').style.display = v === 'diario' ? '' : 'none';
+  if (v === 'planos') renderPlanos();
+  renderSidebar();
+}
+
+// ─── GITHUB ───────────────────────────────────────────────────────────────────
 function ghHeaders() {
-  return {
-    'Authorization': 'Bearer ' + cfg.token,
-    'Accept': 'application/vnd.github+json',
-    'X-GitHub-Api-Version': '2022-11-28',
-    'Content-Type': 'application/json'
-  };
+  return { 'Authorization': 'Bearer ' + cfg.token, 'Accept': 'application/vnd.github+json', 'X-GitHub-Api-Version': '2022-11-28', 'Content-Type': 'application/json' };
 }
 
 async function loadFromGitHub() {
   try {
-    const res = await fetch(`https://api.github.com/repos/${cfg.user}/${cfg.repo}/contents/${FILENAME}`, {
-      headers: ghHeaders()
-    });
+    const res = await fetch(`https://api.github.com/repos/${cfg.user}/${cfg.repo}/contents/${FILENAME}`, { headers: ghHeaders() });
     if (res.status === 404) {
       const body = await res.json().catch(() => ({}));
       if (body.message && body.message.includes('Not Found')) {
-        setSyncStatus('err', 'Repositório não encontrado — verifique usuário e nome do repo em Config');
-        showStatus('Repositório "' + cfg.user + '/' + cfg.repo + '" não encontrado no GitHub.', 'error');
+        setSyncStatus('err', 'Repositório não encontrado — verifique em Config');
+        showStatus('Repositório "' + cfg.user + '/' + cfg.repo + '" não encontrado.', 'error');
         return;
       }
       setSyncStatus('ok', 'Repositório vazio — pronto para começar');
-      data = { days: {} };
+      data = { days: {}, planos: [] };
       return;
     }
-    if (res.status === 401) {
-      setSyncStatus('err', 'Token inválido ou expirado');
-      showStatus('Token inválido. Clique em Config e verifique o token.', 'error');
-      return;
-    }
-    if (!res.ok) {
-      const body = await res.json().catch(() => ({}));
-      throw new Error((body.message || 'HTTP ' + res.status));
-    }
+    if (res.status === 401) { setSyncStatus('err', 'Token inválido'); showStatus('Token inválido. Verifique em Config.', 'error'); return; }
+    if (!res.ok) { const b = await res.json().catch(()=>({})); throw new Error(b.message || 'HTTP ' + res.status); }
     const json = await res.json();
     fileSha = json.sha;
-    const decoded = decodeURIComponent(atob(json.content.replace(/\n/g, '')).split('').map(c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)).join(''));
+    const raw = atob(json.content.replace(/\n/g, ''));
+    const decoded = decodeURIComponent(raw.split('').map(c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)).join(''));
     data = JSON.parse(decoded);
+    if (!data.planos) data.planos = [];
     setSyncStatus('ok', 'Sincronizado');
   } catch(e) {
     setSyncStatus('err', 'Erro: ' + e.message);
     showStatus('Erro ao carregar: ' + e.message, 'error');
     const local = localStorage.getItem('dt_data_cache');
-    if (local) { data = JSON.parse(local); showStatus('Usando dados em cache local.', ''); }
+    if (local) { data = JSON.parse(local); if (!data.planos) data.planos = []; }
   }
 }
 
@@ -605,30 +461,11 @@ async function saveToGitHub() {
     const jsonStr = JSON.stringify(data, null, 2);
     const bytes = new TextEncoder().encode(jsonStr);
     const content = btoa(String.fromCharCode(...bytes));
-    const body = {
-      message: 'Atualização diário ' + new Date().toLocaleDateString('pt-BR'),
-      content,
-      ...(fileSha ? { sha: fileSha } : {})
-    };
-    const res = await fetch(`https://api.github.com/repos/${cfg.user}/${cfg.repo}/contents/${FILENAME}`, {
-      method: 'PUT',
-      headers: ghHeaders(),
-      body: JSON.stringify(body)
-    });
-    if (res.status === 401) {
-      setSyncStatus('err', 'Token inválido');
-      showStatus('Token inválido. Clique em Config e verifique o token.', 'error');
-      return;
-    }
-    if (res.status === 404) {
-      setSyncStatus('err', 'Repositório não encontrado');
-      showStatus('Repositório "' + cfg.user + '/' + cfg.repo + '" não encontrado. Clique em Config para corrigir.', 'error');
-      return;
-    }
-    if (!res.ok) {
-      const errBody = await res.json().catch(() => ({}));
-      throw new Error(errBody.message || 'HTTP ' + res.status);
-    }
+    const body = { message: 'Atualização diário ' + new Date().toLocaleDateString('pt-BR'), content, ...(fileSha ? { sha: fileSha } : {}) };
+    const res = await fetch(`https://api.github.com/repos/${cfg.user}/${cfg.repo}/contents/${FILENAME}`, { method: 'PUT', headers: ghHeaders(), body: JSON.stringify(body) });
+    if (res.status === 401) { setSyncStatus('err', 'Token inválido'); showStatus('Token inválido.', 'error'); return; }
+    if (res.status === 404) { setSyncStatus('err', 'Repositório não encontrado'); showStatus('Repositório não encontrado. Verifique Config.', 'error'); return; }
+    if (!res.ok) { const b = await res.json().catch(()=>({})); throw new Error(b.message || 'HTTP ' + res.status); }
     const json = await res.json();
     fileSha = json.content.sha;
     localStorage.setItem('dt_data_cache', JSON.stringify(data));
@@ -641,46 +478,32 @@ async function saveToGitHub() {
   }
 }
 
-
-
 async function forceSync() {
   setSyncStatus('loading', 'Sincronizando…');
   await loadFromGitHub();
   renderSidebar();
   if (activeDayId) renderDay(activeDayId);
+  if (currentView === 'planos') renderPlanos();
 }
 
-// ─── SIDEBAR ─────────────────────────────────────────────────────────────────
+// ─── SIDEBAR ──────────────────────────────────────────────────────────────────
 function renderSidebar() {
   const el = document.getElementById('sidebar-list');
   const days = Object.keys(data.days).sort((a,b) => b.localeCompare(a));
-
   if (days.length === 0) { el.innerHTML = ''; return; }
-
-  // Agrupar por mês
   const months = {};
-  days.forEach(d => {
-    const [y, m] = d.split('-');
-    const key = y + '-' + m;
-    if (!months[key]) months[key] = [];
-    months[key].push(d);
-  });
-
-  const monthNames = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
-
+  days.forEach(d => { const [y,m] = d.split('-'); const k = y+'-'+m; if (!months[k]) months[k]=[]; months[k].push(d); });
+  const MN = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
   let html = '';
-  Object.keys(months).sort((a,b) => b.localeCompare(a)).forEach(mk => {
-    const [y, m] = mk.split('-');
-    html += `<div class="month-group">
-      <div class="month-label">${monthNames[parseInt(m)-1]} ${y}</div>`;
+  Object.keys(months).sort((a,b)=>b.localeCompare(a)).forEach(mk => {
+    const [y,m] = mk.split('-');
+    html += `<div class="month-group"><div class="month-label">${MN[parseInt(m)-1]} ${y}</div>`;
     months[mk].forEach(d => {
-      const count = (data.days[d]?.entries || []).length;
-      const dateObj = new Date(d + 'T12:00:00');
-      const label = dateObj.toLocaleDateString('pt-BR', {day:'2-digit', month:'2-digit', weekday:'short'});
-      const active = d === activeDayId ? ' active' : '';
-      html += `<div class="day-item${active}" onclick="selectDay('${d}')">
+      const count = (data.days[d]?.entries||[]).length;
+      const label = new Date(d+'T12:00:00').toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit',weekday:'short'});
+      html += `<div class="day-item${d===activeDayId?' active':''}" onclick="selectDay('${d}')">
         <span class="di-date">${label}</span>
-        ${count > 0 ? `<span class="di-count">${count}</span>` : ''}
+        ${count>0?`<span class="di-count">${count}</span>`:''}
       </div>`;
     });
     html += '</div>';
@@ -690,28 +513,48 @@ function renderSidebar() {
 
 function selectDay(dayId) {
   activeDayId = dayId;
+  if (currentView !== 'diario') {
+    currentView = 'diario';
+    document.querySelectorAll('.nav-tab').forEach((t,i) => t.classList.toggle('active', i===0));
+    document.getElementById('view-diario').style.display = '';
+    document.getElementById('view-planos').style.display = 'none';
+    document.getElementById('btn-novo').style.display = '';
+  }
   renderSidebar();
   renderDay(dayId);
 }
 
 // ─── DAY VIEW ─────────────────────────────────────────────────────────────────
+function getAcaoById(acaoId) {
+  if (!acaoId || acaoId === AVULSA_ID) return null;
+  for (const p of (data.planos||[])) {
+    const a = (p.acoes||[]).find(a => a.id === acaoId);
+    if (a) return { ...a, planoNome: p.nome };
+  }
+  return null;
+}
+
 function renderDay(dayId) {
   const day = data.days[dayId];
   if (!day) return;
   document.getElementById('empty-state').style.display = 'none';
   const view = document.getElementById('day-view');
   view.style.display = 'block';
-
-  const dateObj = new Date(dayId + 'T12:00:00');
-  const title = dateObj.toLocaleDateString('pt-BR', {weekday:'long', day:'numeric', month:'long', year:'numeric'});
-  const titleCap = title.charAt(0).toUpperCase() + title.slice(1);
-  const count = (day.entries || []).length;
+  const dateObj = new Date(dayId+'T12:00:00');
+  const title = dateObj.toLocaleDateString('pt-BR',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+  const titleCap = title.charAt(0).toUpperCase()+title.slice(1);
+  const count = (day.entries||[]).length;
 
   let entriesHtml = '';
-  (day.entries || []).forEach(e => {
+  (day.entries||[]).forEach(e => {
+    const acao = getAcaoById(e.acaoId);
     const hasPriv = e.nota && e.nota.trim();
+    const tagHtml = acao
+      ? `<div class="acao-tag" style="background:${acao.cor}22;color:${acao.cor}"><span class="acao-dot" style="background:${acao.cor}"></span>${esc(acao.nome)}</div>`
+      : `<div class="acao-tag" style="background:#f0f0f0;color:#888"><span class="acao-dot" style="background:#aaa"></span>Outras atividades realizadas</div>`;
     entriesHtml += `
-    <div class="entry-card" id="entry-${e.id}">
+    <div class="entry-card" id="entry-${e.id}" style="${acao?'border-left:3px solid '+acao.cor:''}">
+      ${tagHtml}
       <div class="entry-card-header">
         <div class="entry-title">${esc(e.titulo)}</div>
         <div class="entry-actions">
@@ -719,7 +562,7 @@ function renderDay(dayId) {
             <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
           </button>
           <button class="icon-btn danger" title="Excluir" onclick="deleteEntry('${dayId}','${e.id}')">
-            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a1 1 0 011-1h4a1 1 0 011 1v2"/></svg>
+            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/><path d="M10 11v6M14 11v6M9 6V4a1 1 0 011-1h4a1 1 0 011 1v2"/></svg>
           </button>
         </div>
       </div>
@@ -740,7 +583,7 @@ function renderDay(dayId) {
     <div class="day-header">
       <div>
         <div class="day-title">${titleCap}</div>
-        <div class="day-subtitle">${count === 0 ? 'Nenhuma atividade registrada' : count === 1 ? '1 atividade' : count + ' atividades'}</div>
+        <div class="day-subtitle">${count===0?'Nenhuma atividade':count===1?'1 atividade':count+' atividades'}</div>
       </div>
       <div class="day-actions">
         <button class="btn-sm" onclick="confirmDeleteDay('${dayId}')">
@@ -765,63 +608,183 @@ function togglePriv(btn) {
     : `<svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg> Ver nota privada`;
 }
 
-// ─── MODAL NEW DAY ────────────────────────────────────────────────────────────
-function openNewDayModal() {
-  const today = new Date().toISOString().split('T')[0];
-  document.getElementById('new-day-date').value = today;
-  document.getElementById('day-modal').classList.remove('hidden');
+// ─── PLANOS ───────────────────────────────────────────────────────────────────
+function renderPlanos() {
+  const el = document.getElementById('planos-list');
+  if (!data.planos || data.planos.length === 0) {
+    el.innerHTML = `<div class="main-empty" style="height:auto;padding:3rem 0"><h3 style="font-size:1.1rem">Nenhum plano cadastrado</h3><p>Crie um plano de trabalho e adicione as ações previstas.</p></div>`;
+    return;
+  }
+  el.innerHTML = data.planos.map(p => {
+    const ini = p.inicio ? new Date(p.inicio+'T12:00:00').toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit',year:'numeric'}) : '—';
+    const fim = p.fim ? new Date(p.fim+'T12:00:00').toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit',year:'numeric'}) : '—';
+    const acoesHtml = (p.acoes||[]).map(a => `
+      <div class="acao-item">
+        <div class="acao-color-dot" style="background:${a.cor}"></div>
+        <span class="acao-nome">${esc(a.nome)}</span>
+        <button class="icon-btn" onclick="editAcao('${p.id}','${a.id}')"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
+        <button class="icon-btn danger" onclick="deleteAcao('${p.id}','${a.id}')"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/><path d="M10 11v6M14 11v6M9 6V4a1 1 0 011-1h4a1 1 0 011 1v2"/></svg></button>
+      </div>`).join('');
+    return `<div class="plano-card">
+      <div class="plano-card-header">
+        <div>
+          <div class="plano-nome">${esc(p.nome)}</div>
+          <div class="plano-periodo">${ini} → ${fim}</div>
+        </div>
+        <div style="display:flex;gap:4px">
+          <button class="icon-btn" onclick="editPlano('${p.id}')"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
+          <button class="icon-btn danger" onclick="deletePlano('${p.id}')"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/><path d="M10 11v6M14 11v6M9 6V4a1 1 0 011-1h4a1 1 0 011 1v2"/></svg></button>
+        </div>
+      </div>
+      <div class="acoes-list">${acoesHtml}</div>
+      <button class="btn-add-acao" onclick="openAcaoModal('${p.id}')">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+        Adicionar ação
+      </button>
+    </div>`;
+  }).join('');
 }
 
-function createDay() {
-  const d = document.getElementById('new-day-date').value;
-  if (!d) return;
-  document.getElementById('day-modal').classList.add('hidden');
-  if (!data.days[d]) data.days[d] = { entries: [] };
-  renderSidebar();
-  selectDay(d);
+function openPlanoModal(planoId) {
+  editingPlanoId = planoId || null;
+  const p = planoId ? data.planos.find(x => x.id === planoId) : null;
+  document.getElementById('plano-modal-title').textContent = p ? 'Editar plano' : 'Novo plano de trabalho';
+  document.getElementById('plano-nome').value = p ? p.nome : '';
+  document.getElementById('plano-inicio').value = p ? p.inicio : '';
+  document.getElementById('plano-fim').value = p ? p.fim : '';
+  document.getElementById('plano-modal').classList.remove('hidden');
 }
 
-// ─── MODAL ENTRY ──────────────────────────────────────────────────────────────
+function editPlano(id) { openPlanoModal(id); }
+
+async function savePlano() {
+  const nome = document.getElementById('plano-nome').value.trim();
+  const inicio = document.getElementById('plano-inicio').value;
+  const fim = document.getElementById('plano-fim').value;
+  if (!nome) { showStatus('Informe o nome do plano.', 'error'); return; }
+  if (editingPlanoId) {
+    const p = data.planos.find(x => x.id === editingPlanoId);
+    p.nome = nome; p.inicio = inicio; p.fim = fim;
+  } else {
+    data.planos.push({ id: uid(), nome, inicio, fim, acoes: [] });
+  }
+  document.getElementById('plano-modal').classList.add('hidden');
+  renderPlanos();
+  await saveToGitHub();
+}
+
+async function deletePlano(id) {
+  if (!confirm('Excluir este plano e todas as suas ações?')) return;
+  data.planos = data.planos.filter(p => p.id !== id);
+  renderPlanos();
+  await saveToGitHub();
+}
+
+// ─── AÇÕES ────────────────────────────────────────────────────────────────────
+function buildColorSwatches() {
+  const el = document.getElementById('color-swatches');
+  el.innerHTML = COLORS.map(c =>
+    `<div class="swatch${c.hex===selectedColor?' selected':''}" style="background:${c.hex}" title="${c.label}" onclick="selectColor('${c.hex}',this)"></div>`
+  ).join('');
+}
+
+function selectColor(hex, el) {
+  selectedColor = hex;
+  document.querySelectorAll('.swatch').forEach(s => s.classList.remove('selected'));
+  el.classList.add('selected');
+}
+
+function openAcaoModal(planoId, acaoId) {
+  editingAcaoPlanoId = planoId;
+  editingAcaoId = acaoId || null;
+  const a = acaoId ? (data.planos.find(p=>p.id===planoId)?.acoes||[]).find(x=>x.id===acaoId) : null;
+  document.getElementById('acao-modal-title').textContent = a ? 'Editar ação' : 'Nova ação';
+  document.getElementById('acao-nome').value = a ? a.nome : '';
+  selectedColor = a ? a.cor : COLORS[0].hex;
+  buildColorSwatches();
+  document.getElementById('acao-modal').classList.remove('hidden');
+}
+
+function editAcao(planoId, acaoId) { openAcaoModal(planoId, acaoId); }
+
+async function saveAcao() {
+  const nome = document.getElementById('acao-nome').value.trim();
+  if (!nome) { showStatus('Informe o nome da ação.', 'error'); return; }
+  const plano = data.planos.find(p => p.id === editingAcaoPlanoId);
+  if (!plano) return;
+  if (editingAcaoId) {
+    const a = plano.acoes.find(x => x.id === editingAcaoId);
+    a.nome = nome; a.cor = selectedColor;
+  } else {
+    plano.acoes.push({ id: uid(), nome, cor: selectedColor });
+  }
+  document.getElementById('acao-modal').classList.add('hidden');
+  renderPlanos();
+  await saveToGitHub();
+}
+
+async function deleteAcao(planoId, acaoId) {
+  if (!confirm('Excluir esta ação?')) return;
+  const plano = data.planos.find(p => p.id === planoId);
+  plano.acoes = plano.acoes.filter(a => a.id !== acaoId);
+  renderPlanos();
+  await saveToGitHub();
+}
+
+// ─── ENTRY MODAL ──────────────────────────────────────────────────────────────
+function buildAcaoSelect(currentAcaoId) {
+  const sel = document.getElementById('entry-acao');
+  let opts = `<option value="${AVULSA_ID}">— Outras atividades realizadas —</option>`;
+  const today = activeDayId || new Date().toISOString().split('T')[0];
+  (data.planos||[]).forEach(p => {
+    const ativo = (!p.inicio || p.inicio <= today) && (!p.fim || p.fim >= today);
+    const label = p.nome + (ativo ? '' : ' (fora do período)');
+    (p.acoes||[]).forEach(a => {
+      opts += `<option value="${a.id}" ${a.id===currentAcaoId?'selected':''}>${a.nome} — ${label}</option>`;
+    });
+  });
+  sel.innerHTML = opts;
+  if (currentAcaoId && currentAcaoId !== AVULSA_ID) sel.value = currentAcaoId;
+}
+
 function openEntryModal(dayId, entryId) {
   editingDayId = dayId;
   editingEntryId = entryId || null;
   const modal = document.getElementById('entry-modal');
   if (entryId) {
-    const entry = data.days[dayId].entries.find(e => e.id === entryId);
+    const e = data.days[dayId].entries.find(x => x.id === entryId);
     document.getElementById('modal-title').textContent = 'Editar atividade';
-    document.getElementById('entry-titulo').value = entry.titulo;
-    document.getElementById('entry-desc').value = entry.desc;
-    document.getElementById('entry-nota').value = entry.nota || '';
+    document.getElementById('entry-titulo').value = e.titulo;
+    document.getElementById('entry-desc').value = e.desc;
+    document.getElementById('entry-nota').value = e.nota || '';
+    buildAcaoSelect(e.acaoId);
   } else {
     document.getElementById('modal-title').textContent = 'Nova atividade';
     document.getElementById('entry-titulo').value = '';
     document.getElementById('entry-desc').value = '';
     document.getElementById('entry-nota').value = '';
+    buildAcaoSelect(null);
   }
   modal.classList.remove('hidden');
   setTimeout(() => document.getElementById('entry-titulo').focus(), 80);
 }
 
-function closeEntryModal() {
-  document.getElementById('entry-modal').classList.add('hidden');
-}
-
+function closeEntryModal() { document.getElementById('entry-modal').classList.add('hidden'); }
 function editEntry(dayId, entryId) { openEntryModal(dayId, entryId); }
 
 async function saveEntry() {
   const titulo = document.getElementById('entry-titulo').value.trim();
   const desc = document.getElementById('entry-desc').value.trim();
   const nota = document.getElementById('entry-nota').value.trim();
+  const acaoId = document.getElementById('entry-acao').value || AVULSA_ID;
   if (!titulo || !desc) { showStatus('Preencha título e descrição.', 'error'); return; }
-
   if (editingEntryId) {
-    const entry = data.days[editingDayId].entries.find(e => e.id === editingEntryId);
-    entry.titulo = titulo; entry.desc = desc; entry.nota = nota;
+    const e = data.days[editingDayId].entries.find(x => x.id === editingEntryId);
+    e.titulo = titulo; e.desc = desc; e.nota = nota; e.acaoId = acaoId;
   } else {
     if (!data.days[editingDayId]) data.days[editingDayId] = { entries: [] };
-    data.days[editingDayId].entries.push({ id: uid(), titulo, desc, nota });
+    data.days[editingDayId].entries.push({ id: uid(), titulo, desc, nota, acaoId });
   }
-
   closeEntryModal();
   renderSidebar();
   renderDay(editingDayId);
@@ -834,6 +797,21 @@ async function deleteEntry(dayId, entryId) {
   renderSidebar();
   renderDay(dayId);
   await saveToGitHub();
+}
+
+// ─── DAY MODAL ────────────────────────────────────────────────────────────────
+function openNewDayModal() {
+  document.getElementById('new-day-date').value = new Date().toISOString().split('T')[0];
+  document.getElementById('day-modal').classList.remove('hidden');
+}
+
+function createDay() {
+  const d = document.getElementById('new-day-date').value;
+  if (!d) return;
+  document.getElementById('day-modal').classList.add('hidden');
+  if (!data.days[d]) data.days[d] = { entries: [] };
+  renderSidebar();
+  selectDay(d);
 }
 
 async function confirmDeleteDay(dayId) {
@@ -850,95 +828,97 @@ async function confirmDeleteDay(dayId) {
 function openExportModal() {
   const select = document.getElementById('export-month');
   const months = {};
-  Object.keys(data.days).forEach(d => {
-    const [y, m] = d.split('-');
-    months[y+'-'+m] = true;
-  });
-  const monthNames = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
-  const sorted = Object.keys(months).sort((a,b) => b.localeCompare(a));
-  select.innerHTML = sorted.map(mk => {
+  Object.keys(data.days).forEach(d => { const [y,m] = d.split('-'); months[y+'-'+m]=true; });
+  const MN = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+  select.innerHTML = Object.keys(months).sort((a,b)=>b.localeCompare(a)).map(mk => {
     const [y,m] = mk.split('-');
-    return `<option value="${mk}">${monthNames[parseInt(m)-1]} ${y}</option>`;
+    return `<option value="${mk}">${MN[parseInt(m)-1]} ${y}</option>`;
   }).join('');
-  updateExportPreview();
   select.onchange = updateExportPreview;
+  updateExportPreview();
   document.getElementById('export-modal').classList.remove('hidden');
 }
 
 function updateExportPreview() {
   const mk = document.getElementById('export-month').value;
   if (!mk) return;
-  const [y, m] = mk.split('-');
-  const monthNames = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
-  let txt = `RELATÓRIO DE ATIVIDADES — ${monthNames[parseInt(m)-1].toUpperCase()} ${y}\n`;
-  txt += '═'.repeat(50) + '\n\n';
+  const order = document.querySelector('input[name="export-order"]:checked').value;
+  const [y,m] = mk.split('-');
+  const MN = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+  let txt = `RELATÓRIO DE ATIVIDADES — ${MN[parseInt(m)-1].toUpperCase()} ${y}\n${'═'.repeat(50)}\n\n`;
 
-  const days = Object.keys(data.days).filter(d => d.startsWith(mk)).sort();
+  const days = Object.keys(data.days).filter(d=>d.startsWith(mk)).sort();
   if (days.length === 0) { document.getElementById('export-preview').textContent = '(Nenhum registro neste período)'; return; }
 
-  days.forEach(d => {
-    const dateObj = new Date(d + 'T12:00:00');
-    const label = dateObj.toLocaleDateString('pt-BR', {weekday:'long', day:'numeric', month:'long'});
-    txt += `▸ ${label.charAt(0).toUpperCase() + label.slice(1)}\n`;
-    txt += '─'.repeat(40) + '\n';
-    (data.days[d].entries || []).forEach((e, i) => {
-      txt += `${i+1}. ${e.titulo}\n`;
-      txt += `   ${e.desc}\n\n`;
+  if (order === 'data') {
+    days.forEach(d => {
+      const label = new Date(d+'T12:00:00').toLocaleDateString('pt-BR',{weekday:'long',day:'numeric',month:'long'});
+      txt += `▸ ${label.charAt(0).toUpperCase()+label.slice(1)}\n${'─'.repeat(40)}\n`;
+      (data.days[d].entries||[]).forEach((e,i) => {
+        const acao = getAcaoById(e.acaoId);
+        txt += `${i+1}. ${e.titulo}${acao?' ['+acao.nome+']':' [Outras atividades]'}\n   ${e.desc}\n\n`;
+      });
+      txt += '\n';
     });
-    txt += '\n';
-  });
-
+  } else {
+    // Agrupar por ação
+    const grupos = {};
+    days.forEach(d => {
+      (data.days[d].entries||[]).forEach(e => {
+        const key = e.acaoId || AVULSA_ID;
+        if (!grupos[key]) grupos[key] = [];
+        grupos[key].push({ ...e, dayId: d });
+      });
+    });
+    // Ações dos planos primeiro, avulso por último
+    const todasAcoes = [];
+    (data.planos||[]).forEach(p => (p.acoes||[]).forEach(a => todasAcoes.push({ id: a.id, nome: a.nome })));
+    todasAcoes.push({ id: AVULSA_ID, nome: 'Outras atividades realizadas' });
+    todasAcoes.forEach(a => {
+      if (!grupos[a.id]) return;
+      txt += `◆ ${a.nome.toUpperCase()}\n${'─'.repeat(40)}\n`;
+      grupos[a.id].forEach((e,i) => {
+        const label = new Date(e.dayId+'T12:00:00').toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit'});
+        txt += `${i+1}. [${label}] ${e.titulo}\n   ${e.desc}\n\n`;
+      });
+      txt += '\n';
+    });
+  }
   document.getElementById('export-preview').textContent = txt;
 }
 
 function copyExport() {
-  const txt = document.getElementById('export-preview').textContent;
-  navigator.clipboard.writeText(txt).then(() => showStatus('Copiado!', 'success'));
+  navigator.clipboard.writeText(document.getElementById('export-preview').textContent)
+    .then(() => showStatus('Copiado!', 'success'));
 }
 
 // ─── SETTINGS ────────────────────────────────────────────────────────────────
 function openSettings() {
-  const u = prompt('Usuário GitHub:', cfg.user);
-  if (u === null) return;
-  const r = prompt('Repositório:', cfg.repo);
-  if (r === null) return;
-  const t = prompt('Token (deixe em branco para manter o atual):');
-  cfg.user = u.trim() || cfg.user;
-  cfg.repo = r.trim() || cfg.repo;
+  const u = prompt('Usuário GitHub:', cfg.user); if (u===null) return;
+  const r = prompt('Repositório:', cfg.repo); if (r===null) return;
+  const t = prompt('Token (em branco para manter):');
+  cfg.user = u.trim()||cfg.user; cfg.repo = r.trim()||cfg.repo;
   if (t && t.trim()) cfg.token = t.trim();
   localStorage.setItem('dt_config', JSON.stringify(cfg));
-  document.getElementById('sidebar-user').textContent = cfg.user + '/' + cfg.repo;
-  fileSha = null;
-  forceSync();
+  document.getElementById('sidebar-user').textContent = cfg.user+'/'+cfg.repo;
+  fileSha = null; forceSync();
 }
 
 // ─── HELPERS ─────────────────────────────────────────────────────────────────
-function uid() { return Date.now().toString(36) + Math.random().toString(36).slice(2,6); }
+function uid() { return Date.now().toString(36)+Math.random().toString(36).slice(2,6); }
 function esc(s) { return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>'); }
-
-function setSyncStatus(state, text) {
-  const dot = document.getElementById('sync-dot');
-  const txt = document.getElementById('sync-text');
-  dot.className = 'sync-dot ' + (state === 'ok' ? 'ok' : state === 'err' ? 'err' : 'loading');
-  txt.textContent = text;
+function setSyncStatus(s,t) {
+  document.getElementById('sync-dot').className = 'sync-dot '+(s==='ok'?'ok':s==='err'?'err':'loading');
+  document.getElementById('sync-text').textContent = t;
 }
-
 let statusTimer;
-function showStatus(msg, type) {
+function showStatus(msg,type) {
   const bar = document.getElementById('status-bar');
-  bar.textContent = msg;
-  bar.className = 'show ' + (type || '');
-  clearTimeout(statusTimer);
-  statusTimer = setTimeout(() => bar.className = '', 3000);
+  bar.textContent = msg; bar.className = 'show '+(type||'');
+  clearTimeout(statusTimer); statusTimer = setTimeout(()=>bar.className='',3500);
 }
-
-// Enter no modal fecha
 document.addEventListener('keydown', e => {
-  if (e.key === 'Escape') {
-    document.getElementById('entry-modal').classList.add('hidden');
-    document.getElementById('day-modal').classList.add('hidden');
-    document.getElementById('export-modal').classList.add('hidden');
-  }
+  if (e.key==='Escape') ['entry-modal','day-modal','plano-modal','acao-modal','export-modal'].forEach(id=>document.getElementById(id).classList.add('hidden'));
 });
 </script>
 </body>
