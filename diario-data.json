@@ -26,5 +26,14 @@
         }
       ]
     }
-  }
+  },
+  "planos": [
+    {
+      "id": "mpwzneo2hzxl",
+      "nome": "Plano DMAITE n.1",
+      "inicio": "2026-04-21",
+      "fim": "2026-10-21",
+      "acoes": []
+    }
+  ]
 }
