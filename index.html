@@ -567,18 +567,33 @@ async function loadFromGitHub() {
       headers: ghHeaders()
     });
     if (res.status === 404) {
+      const body = await res.json().catch(() => ({}));
+      if (body.message && body.message.includes('Not Found')) {
+        setSyncStatus('err', 'Repositório não encontrado — verifique usuário e nome do repo em Config');
+        showStatus('Repositório "' + cfg.user + '/' + cfg.repo + '" não encontrado no GitHub.', 'error');
+        return;
+      }
       setSyncStatus('ok', 'Repositório vazio — pronto para começar');
       data = { days: {} };
       return;
     }
-    if (!res.ok) throw new Error('HTTP ' + res.status);
+    if (res.status === 401) {
+      setSyncStatus('err', 'Token inválido ou expirado');
+      showStatus('Token inválido. Clique em Config e verifique o token.', 'error');
+      return;
+    }
+    if (!res.ok) {
+      const body = await res.json().catch(() => ({}));
+      throw new Error((body.message || 'HTTP ' + res.status));
+    }
     const json = await res.json();
     fileSha = json.sha;
     const decoded = atob(json.content.replace(/\n/g, ''));
     data = JSON.parse(decoded);
     setSyncStatus('ok', 'Sincronizado');
   } catch(e) {
-    setSyncStatus('err', 'Erro ao carregar: ' + e.message);
+    setSyncStatus('err', 'Erro: ' + e.message);
+    showStatus('Erro ao carregar: ' + e.message, 'error');
     const local = localStorage.getItem('dt_data_cache');
     if (local) { data = JSON.parse(local); showStatus('Usando dados em cache local.', ''); }
   }
@@ -587,7 +602,9 @@ async function loadFromGitHub() {
 async function saveToGitHub() {
   setSyncStatus('loading', 'Salvando…');
   try {
-    const content = btoa(unescape(encodeURIComponent(JSON.stringify(data, null, 2))));
+    const jsonStr = JSON.stringify(data, null, 2);
+    const bytes = new TextEncoder().encode(jsonStr);
+    const content = btoa(String.fromCharCode(...bytes));
     const body = {
       message: 'Atualização diário ' + new Date().toLocaleDateString('pt-BR'),
       content,
@@ -598,7 +615,20 @@ async function saveToGitHub() {
       headers: ghHeaders(),
       body: JSON.stringify(body)
     });
-    if (!res.ok) throw new Error('HTTP ' + res.status);
+    if (res.status === 401) {
+      setSyncStatus('err', 'Token inválido');
+      showStatus('Token inválido. Clique em Config e verifique o token.', 'error');
+      return;
+    }
+    if (res.status === 404) {
+      setSyncStatus('err', 'Repositório não encontrado');
+      showStatus('Repositório "' + cfg.user + '/' + cfg.repo + '" não encontrado. Clique em Config para corrigir.', 'error');
+      return;
+    }
+    if (!res.ok) {
+      const errBody = await res.json().catch(() => ({}));
+      throw new Error(errBody.message || 'HTTP ' + res.status);
+    }
     const json = await res.json();
     fileSha = json.content.sha;
     localStorage.setItem('dt_data_cache', JSON.stringify(data));
@@ -607,9 +637,11 @@ async function saveToGitHub() {
   } catch(e) {
     setSyncStatus('err', 'Erro ao salvar');
     localStorage.setItem('dt_data_cache', JSON.stringify(data));
-    showStatus('Salvo localmente. Erro GitHub: ' + e.message, 'error');
+    showStatus('Erro ao salvar: ' + e.message, 'error');
   }
 }
+
+
 
 async function forceSync() {
   setSyncStatus('loading', 'Sincronizando…');
