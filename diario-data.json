@@ -33,7 +33,13 @@
       "nome": "Plano DMAITE n.1",
       "inicio": "2026-04-21",
       "fim": "2026-10-21",
-      "acoes": []
+      "acoes": [
+        {
+          "id": "mpwzshqgb9ez",
+          "nome": "Protótipo Automatizado para Avaliação Anual",
+          "cor": "#D35400"
+        }
+      ]
     }
   ]
 }
