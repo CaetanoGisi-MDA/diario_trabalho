@@ -157,6 +157,13 @@ main::-webkit-scrollbar-thumb{background:var(--border2);border-radius:4px}
 
 /* EXPORT */
 .export-preview{background:var(--bg2);border-radius:8px;padding:1rem;font-size:13px;color:var(--text2);white-space:pre-wrap;line-height:1.7;max-height:320px;overflow-y:auto;font-family:var(--font-body);border:1px solid var(--border);margin-bottom:1rem}
+.info-btn{background:transparent;border:none;cursor:pointer;color:var(--text3);padding:3px;border-radius:5px;display:flex;align-items:center;flex-shrink:0;transition:color .12s}
+.info-btn:hover{color:var(--accent)}
+.info-btn svg{width:15px;height:15px}
+.info-panel{position:absolute;left:0;right:0;top:calc(100% + 6px);background:var(--surface);border:1px solid var(--border2);border-radius:var(--radius);padding:12px 14px;z-index:50;box-shadow:0 4px 16px rgba(0,0,0,.1);line-height:1.5;font-size:13px;color:var(--text2)}
+.info-panel a{color:var(--accent)}
+.info-panel.hidden{display:none}
+.no-senha-label input[type=checkbox]{accent-color:var(--accent);width:14px;height:14px}
 .export-options{display:flex;gap:8px;margin-bottom:1rem;flex-wrap:wrap}
 .radio-btn{display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer;padding:7px 12px;border:1px solid var(--border2);border-radius:8px;transition:background .12s}
 .radio-btn:hover{background:var(--bg2)}
@@ -189,18 +196,47 @@ main::-webkit-scrollbar-thumb{background:var(--border2);border-radius:4px}
     <h1>Diário de Trabalho</h1>
     <p>Como você quer guardar seus registros?</p>
 
-    <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:0">
+    <!-- SENHA UNIFICADA -->
+    <div class="field" style="margin-bottom:1.25rem">
+      <label>Senha de criptografia</label>
+      <input type="password" id="cfg-senha" placeholder="Crie uma senha para proteger seus dados" autocomplete="new-password" id="cfg-senha">
+      <div class="priv-hint" style="margin-top:5px">Crie uma senha para proteger seus dados. Guarde-a bem: sem ela seus dados não podem ser recuperados.</div>
+      <label class="no-senha-label" style="margin-top:8px;display:flex;align-items:center;gap:7px;cursor:pointer;font-size:13px;color:var(--text3)">
+        <input type="checkbox" id="chk-no-senha" onchange="toggleSenhaField(this)">
+        Usar sem senha — não preciso proteger meus dados
+      </label>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:0;position:relative">
+
       <!-- Botão GitHub -->
-      <button class="mode-btn" id="mode-btn-github" onclick="showSetupGitHub()">
-        <div class="mode-icon">
-          <svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 00-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0020 4.77 5.07 5.07 0 0019.91 1S18.73.65 16 2.48a13.38 13.38 0 00-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 005 4.77a5.44 5.44 0 00-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 009 18.13V22"/></svg>
+      <div style="position:relative">
+        <button class="mode-btn" id="mode-btn-github" onclick="showSetupGitHub()">
+          <div class="mode-icon">
+            <svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 00-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0020 4.77 5.07 5.07 0 0019.91 1S18.73.65 16 2.48a13.38 13.38 0 00-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 005 4.77a5.44 5.44 0 00-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 009 18.13V22"/></svg>
+          </div>
+          <div class="mode-text">
+            <strong>Sincronizar com GitHub</strong>
+            <span>Acesse de qualquer dispositivo.</span>
+          </div>
+          <button class="info-btn" onclick="event.stopPropagation();toggleInfo('info-github')" title="Como configurar o GitHub">
+            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+          </button>
+          <svg id="github-arrow" style="flex-shrink:0;transition:transform .3s;color:var(--text3)" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
+        </button>
+        <!-- Info panel GitHub -->
+        <div class="info-panel hidden" id="info-github">
+          <strong>Como usar com o GitHub</strong>
+          <ol style="margin:8px 0 0 16px;display:flex;flex-direction:column;gap:5px;font-size:12px;line-height:1.6">
+            <li>Crie uma conta gratuita em <a href="https://github.com" target="_blank">github.com</a></li>
+            <li>Crie um repositório novo (pode ser público ou privado)</li>
+            <li>Faça o upload do <a href="#" onclick="downloadHTML();return false;">index.html</a> para o repositório</li>
+            <li>Gere um <a href="https://github.com/settings/tokens/new" target="_blank">Personal Access Token</a> com permissão <strong>repo</strong></li>
+            <li>Ative o GitHub Pages em Settings → Pages do repositório</li>
+            <li>Acesse o app pela URL gerada e informe suas credenciais</li>
+          </ol>
         </div>
-        <div class="mode-text">
-          <strong>Sincronizar com GitHub</strong>
-          <span>Acesse de qualquer dispositivo.</span>
-        </div>
-        <svg id="github-arrow" style="margin-left:auto;flex-shrink:0;transition:transform .3s;color:var(--text3)" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
-      </button>
+      </div>
 
       <!-- Formulário GitHub expansível -->
       <div id="github-form" style="overflow:hidden;max-height:0;transition:max-height .35s ease;padding:0 2px">
@@ -208,25 +244,44 @@ main::-webkit-scrollbar-thumb{background:var(--border2);border-radius:4px}
           <div class="field"><label>Usuário do GitHub</label><input type="text" id="cfg-user" placeholder="seunome" autocomplete="off" spellcheck="false"></div>
           <div class="field"><label>Nome do repositório</label><input type="text" id="cfg-repo" placeholder="diario-trabalho" autocomplete="off" spellcheck="false"></div>
           <div class="field"><label>Personal Access Token</label><input type="password" id="cfg-token" placeholder="ghp_xxxxxxxxxxxx" autocomplete="off"></div>
-          <div class="help">
-            <strong>GitHub → Settings → Developer settings → Personal access tokens → Tokens (classic)</strong><br>
-            Marque apenas <strong>repo</strong>. <a href="https://github.com/settings/tokens/new" target="_blank">Abrir gerador →</a>
-          </div>
           <button class="btn-primary" onclick="saveConfig()">Entrar</button>
         </div>
       </div>
 
       <!-- Botão local -->
-      <button class="mode-btn" onclick="startLocal()">
-        <div class="mode-icon">
-          <svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+      <div style="position:relative">
+        <button class="mode-btn" id="mode-btn-local" onclick="showSetupLocal()">
+          <div class="mode-icon">
+            <svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+          </div>
+          <div class="mode-text">
+            <strong>Usar localmente</strong>
+            <span>Dados salvos neste navegador.</span>
+          </div>
+          <button class="info-btn" onclick="event.stopPropagation();toggleInfo('info-local')" title="Como usar localmente">
+            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+          </button>
+          <svg id="local-arrow" style="flex-shrink:0;transition:transform .3s;color:var(--text3)" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
+        </button>
+        <!-- Info panel Local -->
+        <div class="info-panel hidden" id="info-local">
+          <strong>Como usar localmente</strong>
+          <p style="font-size:12px;margin-top:6px;line-height:1.6">Os dados ficam salvos neste navegador, neste dispositivo. Sem necessidade de conta em nenhum serviço.</p>
+          <p style="font-size:12px;margin-top:6px;line-height:1.6">Para usar em outro computador, faça o download do app e abra o arquivo no navegador:</p>
+          <button class="btn-sm" style="margin-top:8px" onclick="downloadHTML()">
+            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+            Baixar index.html
+          </button>
         </div>
-        <div class="mode-text">
-          <strong>Usar localmente</strong>
-          <span>Dados salvos neste navegador.</span>
+      </div>
+
+      <!-- Formulário local expansível -->
+      <div id="local-form" style="overflow:hidden;max-height:0;transition:max-height .35s ease;padding:0 2px">
+        <div style="padding:8px 0 4px">
+          <button class="btn-primary" onclick="startLocal()">Entrar</button>
         </div>
-        <svg style="margin-left:auto;flex-shrink:0;color:var(--text3)" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg>
-      </button>
+      </div>
+
     </div>
   </div>
 </div>
@@ -398,6 +453,42 @@ main::-webkit-scrollbar-thumb{background:var(--border2);border-radius:4px}
 <div id="status-bar"></div>
 
 <script>
+// ─── CRYPTO ──────────────────────────────────────────────────────────────────
+const CRYPTO_MARKER = 'ENC:';
+
+async function deriveKey(senha) {
+  const enc = new TextEncoder();
+  const keyMaterial = await crypto.subtle.importKey('raw', enc.encode(senha), 'PBKDF2', false, ['deriveKey']);
+  return crypto.subtle.deriveKey(
+    { name: 'PBKDF2', salt: enc.encode('diario-salt-v1'), iterations: 100000, hash: 'SHA-256' },
+    keyMaterial, { name: 'AES-GCM', length: 256 }, false, ['encrypt', 'decrypt']
+  );
+}
+
+async function encryptData(obj, senha) {
+  const key = await deriveKey(senha);
+  const iv = crypto.getRandomValues(new Uint8Array(12));
+  const encoded = new TextEncoder().encode(JSON.stringify(obj));
+  const encrypted = await crypto.subtle.encrypt({ name: 'AES-GCM', iv }, key, encoded);
+  const combined = new Uint8Array(iv.length + encrypted.byteLength);
+  combined.set(iv, 0);
+  combined.set(new Uint8Array(encrypted), iv.length);
+  return CRYPTO_MARKER + btoa(String.fromCharCode(...combined));
+}
+
+async function decryptData(str, senha) {
+  if (!str.startsWith(CRYPTO_MARKER)) {
+    // Legacy unencrypted data — migrate
+    return JSON.parse(str);
+  }
+  const key = await deriveKey(senha);
+  const combined = Uint8Array.from(atob(str.slice(CRYPTO_MARKER.length)), c => c.charCodeAt(0));
+  const iv = combined.slice(0, 12);
+  const data = combined.slice(12);
+  const decrypted = await crypto.subtle.decrypt({ name: 'AES-GCM', iv }, key, data);
+  return JSON.parse(new TextDecoder().decode(decrypted));
+}
+
 // ─── COLORS ──────────────────────────────────────────────────────────────────
 const COLORS = [
   {hex:'#4A90D9',label:'Azul'},
@@ -437,7 +528,24 @@ window.addEventListener('DOMContentLoaded', () => {
   const savedMode = localStorage.getItem('dt_mode');
   if (savedMode === 'local') {
     appMode = 'local';
-    startLocalApp();
+    const saved = localStorage.getItem('dt_config');
+    if (saved) cfg = JSON.parse(saved);
+    // Need password to decrypt — show local form pre-filled hint
+    if (cfg.senha) {
+      // Auto-login with stored password
+      const cached = localStorage.getItem('dt_data_cache');
+      if (cached) {
+        decryptData(cached, cfg.senha).then(decrypted => {
+          data = decrypted;
+          if (!data.planos) data.planos = [];
+          startLocalApp();
+        }).catch(() => {
+          // Can't auto-decrypt, show setup
+        });
+      } else {
+        startLocalApp();
+      }
+    }
   } else {
     const saved = localStorage.getItem('dt_config');
     if (saved) { cfg = JSON.parse(saved); appMode = 'github'; startApp(); }
@@ -445,21 +553,76 @@ window.addEventListener('DOMContentLoaded', () => {
   }
 });
 
-function showSetupEscolha() {
-  // no-op, kept for compat
-}
+function showSetupEscolha() {}
 let githubFormOpen = false;
+let localFormOpen = false;
+
+function toggleInfo(id) {
+  // Close all info panels first
+  document.querySelectorAll('.info-panel').forEach(p => {
+    if (p.id !== id) p.classList.add('hidden');
+  });
+  document.getElementById(id).classList.toggle('hidden');
+}
+
+// Close info panels when clicking outside
+document.addEventListener('click', e => {
+  if (!e.target.closest('.info-btn') && !e.target.closest('.info-panel')) {
+    document.querySelectorAll('.info-panel').forEach(p => p.classList.add('hidden'));
+  }
+});
+
+function toggleSenhaField(chk) {
+  const input = document.getElementById('cfg-senha');
+  input.disabled = chk.checked;
+  input.value = '';
+  input.style.opacity = chk.checked ? '0.4' : '1';
+}
+
+function downloadHTML() {
+  const html = document.documentElement.outerHTML;
+  const blob = new Blob([html], { type: 'text/html' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = 'index.html'; a.click();
+  URL.revokeObjectURL(url);
+}
+
+function getSetupSenha() {
+  const chk = document.getElementById('chk-no-senha');
+  if (chk && chk.checked) return '';
+  return (document.getElementById('cfg-senha')?.value || '').trim();
+}
+
 function showSetupGitHub() {
-  githubFormOpen = !githubFormOpen;
-  const form = document.getElementById('github-form');
-  const arrow = document.getElementById('github-arrow');
-  const btn = document.getElementById('mode-btn-github');
-  if (githubFormOpen) {
-    form.style.maxHeight = form.scrollHeight + 400 + 'px';
+  if (localFormOpen) { toggleModeForm('local', false); }
+  toggleModeForm('github');
+}
+
+function showSetupLocal() {
+  if (githubFormOpen) { toggleModeForm('github', false); }
+  toggleModeForm('local');
+}
+
+function toggleModeForm(mode, forceState) {
+  const isGitHub = mode === 'github';
+  const formId = isGitHub ? 'github-form' : 'local-form';
+  const arrowId = isGitHub ? 'github-arrow' : 'local-arrow';
+  const btnId = isGitHub ? 'mode-btn-github' : 'mode-btn-local';
+  const openVar = isGitHub ? 'githubFormOpen' : 'localFormOpen';
+
+  let open = forceState !== undefined ? forceState : !(isGitHub ? githubFormOpen : localFormOpen);
+  if (isGitHub) githubFormOpen = open; else localFormOpen = open;
+
+  const form = document.getElementById(formId);
+  const arrow = document.getElementById(arrowId);
+  const btn = document.getElementById(btnId);
+  if (open) {
+    form.style.maxHeight = form.scrollHeight + 300 + 'px';
     arrow.style.transform = 'rotate(180deg)';
     btn.style.borderColor = 'var(--accent)';
     btn.style.background = 'var(--accent-bg)';
-    setTimeout(() => document.getElementById('cfg-user').focus(), 350);
+    if (isGitHub) setTimeout(() => document.getElementById('cfg-user').focus(), 350);
   } else {
     form.style.maxHeight = '0';
     arrow.style.transform = '';
@@ -468,11 +631,22 @@ function showSetupGitHub() {
   }
 }
 
-function startLocal() {
+async function startLocal() {
+  const senha = getSetupSenha();
   appMode = 'local';
+  cfg.senha = senha;
   localStorage.setItem('dt_mode', 'local');
+  localStorage.setItem('dt_config', JSON.stringify(cfg));
   const cached = localStorage.getItem('dt_data_cache');
-  if (cached) { data = JSON.parse(cached); if (!data.planos) data.planos = []; }
+  if (cached) {
+    try {
+      data = await decryptData(cached, senha);
+      if (!data.planos) data.planos = [];
+    } catch(e) {
+      showStatus('Senha incorreta. Tente novamente.', 'error');
+      return;
+    }
+  }
   startLocalApp();
 }
 
@@ -496,8 +670,9 @@ function saveConfig() {
   const user = document.getElementById('cfg-user').value.trim();
   const repo = document.getElementById('cfg-repo').value.trim();
   const token = document.getElementById('cfg-token').value.trim();
+  const senha = getSetupSenha();
   if (!user || !repo || !token) { showStatus('Preencha todos os campos.', 'error'); return; }
-  cfg = { user, repo, token };
+  cfg = { user, repo, token, senha };
   localStorage.setItem('dt_config', JSON.stringify(cfg));
   localStorage.setItem('dt_mode', 'github');
   appMode = 'github';
@@ -550,7 +725,14 @@ async function loadFromGitHub() {
     fileSha = json.sha;
     const raw = atob(json.content.replace(/\n/g, ''));
     const decoded = decodeURIComponent(raw.split('').map(c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)).join(''));
-    data = JSON.parse(decoded);
+    try {
+      data = await decryptData(decoded, cfg.senha || '');
+    } catch(e) {
+      setSyncStatus('err', 'Senha incorreta ou dados corrompidos');
+      showStatus('Não foi possível decifrar os dados. Verifique a senha em Config.', 'error');
+      data = { days: {}, planos: [] };
+      return;
+    }
     if (!data.planos) data.planos = [];
     setSyncStatus('ok', 'Sincronizado');
   } catch(e) {
@@ -563,7 +745,8 @@ async function loadFromGitHub() {
 
 async function saveToGitHub() {
   if (appMode === 'local') {
-    localStorage.setItem('dt_data_cache', JSON.stringify(data));
+    const encrypted = await encryptData(data, cfg.senha || '');
+    localStorage.setItem('dt_data_cache', encrypted);
     setSyncStatus('ok', 'Salvo às ' + new Date().toLocaleTimeString('pt-BR', {hour:'2-digit',minute:'2-digit'}));
     showStatus('Salvo localmente.', 'success');
     return;
@@ -574,8 +757,8 @@ async function saveToGitHub() {
 async function _saveToGitHub() {
   setSyncStatus('loading', 'Salvando…');
   try {
-    const jsonStr = JSON.stringify(data, null, 2);
-    const bytes = new TextEncoder().encode(jsonStr);
+    const encrypted = await encryptData(data, cfg.senha || '');
+    const bytes = new TextEncoder().encode(encrypted);
     const content = btoa(String.fromCharCode(...bytes));
     const body = { message: 'Atualização diário ' + new Date().toLocaleDateString('pt-BR'), content, ...(fileSha ? { sha: fileSha } : {}) };
     const res = await fetch(`https://api.github.com/repos/${cfg.user}/${cfg.repo}/contents/${FILENAME}`, { method: 'PUT', headers: ghHeaders(), body: JSON.stringify(body) });
@@ -1028,8 +1211,10 @@ function openSettings() {
     const u = prompt('Usuário GitHub:', cfg.user); if (u===null) return;
     const r = prompt('Repositório:', cfg.repo); if (r===null) return;
     const t = prompt('Token (em branco para manter):');
+    const s = prompt('Senha de criptografia (em branco para manter):\n⚠️ Se mudar a senha, os dados antigos não poderão ser lidos. Faça backup antes.');
     cfg.user = u.trim()||cfg.user; cfg.repo = r.trim()||cfg.repo;
     if (t && t.trim()) cfg.token = t.trim();
+    if (s && s.trim()) cfg.senha = s.trim();
     localStorage.setItem('dt_config', JSON.stringify(cfg));
     document.getElementById('sidebar-user').textContent = cfg.user+'/'+cfg.repo;
     fileSha = null; forceSync();
@@ -1041,18 +1226,20 @@ function openSettings() {
     document.getElementById('app').classList.add('hidden');
     document.getElementById('setup-screen').classList.remove('hidden');
     githubFormOpen = false;
-    // Reset form visual
-    const form = document.getElementById('github-form');
-    const arrow = document.getElementById('github-arrow');
-    const btn = document.getElementById('mode-btn-github');
-    if (form) form.style.maxHeight = '0';
-    if (arrow) arrow.style.transform = '';
-    if (btn) { btn.style.borderColor = ''; btn.style.background = ''; }
+    localFormOpen = false;
+    ['github','local'].forEach(m => {
+      const form = document.getElementById(m+'-form');
+      const arrow = document.getElementById(m+'-arrow');
+      const btn = document.getElementById('mode-btn-'+m);
+      if (form) form.style.maxHeight = '0';
+      if (arrow) arrow.style.transform = '';
+      if (btn) { btn.style.borderColor = ''; btn.style.background = ''; }
+    });
   }
 }
 
 // ─── BACKUP (LOCAL MODE) ─────────────────────────────────────────────────────
-function backupExport() {
+async function backupExport() {
   const json = JSON.stringify(data, null, 2);
   const blob = new Blob([json], { type: 'application/json' });
   const url = URL.createObjectURL(blob);
