@@ -22,9 +22,9 @@
 body{font-family:var(--font-body);background:var(--bg);color:var(--text);min-height:100vh;font-size:15px;line-height:1.6}
 
 /* SETUP */
-#setup-screen{position:fixed;inset:0;background:var(--bg);display:flex;align-items:center;justify-content:center;z-index:1000;padding:2rem}
+#setup-screen{position:fixed;inset:0;background:var(--bg);display:flex;align-items:flex-start;justify-content:center;z-index:1000;padding:2rem;overflow-y:auto}
 #setup-screen.hidden{display:none}
-.setup-card{background:var(--surface);border:1px solid var(--border2);border-radius:16px;padding:2.5rem;max-width:480px;width:100%}
+.setup-card{background:var(--surface);border:1px solid var(--border2);border-radius:16px;padding:2.5rem;max-width:480px;width:100%;margin:auto}
 .setup-card h1{font-family:var(--font-display);font-size:1.8rem;margin-bottom:.5rem}
 .setup-card p{color:var(--text2);font-size:14px;margin-bottom:1.5rem;line-height:1.7}
 .setup-card label{display:block;font-size:13px;font-weight:500;color:var(--text2);margin-bottom:6px}
@@ -157,9 +157,9 @@ main::-webkit-scrollbar-thumb{background:var(--border2);border-radius:4px}
 
 /* EXPORT */
 .export-preview{background:var(--bg2);border-radius:8px;padding:1rem;font-size:13px;color:var(--text2);white-space:pre-wrap;line-height:1.7;max-height:320px;overflow-y:auto;font-family:var(--font-body);border:1px solid var(--border);margin-bottom:1rem}
-.info-btn{background:transparent;border:none;cursor:pointer;color:var(--text3);padding:3px;border-radius:5px;display:flex;align-items:center;flex-shrink:0;transition:color .12s}
-.info-btn:hover{color:var(--accent)}
-.info-btn svg{width:15px;height:15px}
+.info-btn{background:var(--bg2);border:1px solid var(--border2);cursor:pointer;color:var(--text2);padding:4px 6px;border-radius:6px;display:flex;align-items:center;flex-shrink:0;transition:color .12s,background .12s;margin-left:auto}
+.info-btn:hover{color:var(--accent);background:var(--accent-bg)}
+.info-btn svg{width:14px;height:14px}
 .info-panel{position:absolute;left:0;right:0;top:calc(100% + 6px);background:var(--surface);border:1px solid var(--border2);border-radius:var(--radius);padding:12px 14px;z-index:50;box-shadow:0 4px 16px rgba(0,0,0,.1);line-height:1.5;font-size:13px;color:var(--text2)}
 .info-panel a{color:var(--accent)}
 .info-panel.hidden{display:none}
@@ -248,7 +248,7 @@ main::-webkit-scrollbar-thumb{background:var(--border2);border-radius:4px}
           <button class="info-btn" onclick="event.stopPropagation();toggleInfo('info-github')" title="Como configurar o GitHub">
             <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
           </button>
-          <svg id="github-arrow" style="flex-shrink:0;transition:transform .3s;color:var(--text3)" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
+          <svg id="github-arrow" style="flex-shrink:0;transition:transform .3s;color:var(--text3);margin-left:6px" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
         </button>
         <!-- Info panel GitHub -->
         <div class="info-panel hidden" id="info-github">
@@ -287,7 +287,7 @@ main::-webkit-scrollbar-thumb{background:var(--border2);border-radius:4px}
           <button class="info-btn" onclick="event.stopPropagation();toggleInfo('info-local')" title="Como usar localmente">
             <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
           </button>
-          <svg id="local-arrow" style="flex-shrink:0;transition:transform .3s;color:var(--text3)" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
+          <svg id="local-arrow" style="flex-shrink:0;transition:transform .3s;color:var(--text3);margin-left:6px" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
         </button>
         <!-- Info panel Local -->
         <div class="info-panel hidden" id="info-local">
