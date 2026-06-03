@@ -34,6 +34,13 @@ body{font-family:var(--font-body);background:var(--bg);color:var(--text);min-hei
 .setup-card .help a{color:var(--accent)}
 .btn-primary{background:var(--accent);color:#fff;border:none;border-radius:var(--radius);padding:11px 20px;font-family:var(--font-body);font-size:14px;font-weight:500;cursor:pointer;width:100%;transition:opacity .15s}
 .btn-primary:hover{opacity:.88}
+.mode-btn{display:flex;align-items:center;gap:14px;background:var(--bg);border:1px solid var(--border2);border-radius:var(--radius);padding:13px 15px;cursor:pointer;text-align:left;transition:border-color .2s,background .2s;width:100%}
+.mode-btn:hover{border-color:var(--accent);background:var(--accent-bg)}
+.mode-icon{width:34px;height:34px;border-radius:8px;background:var(--surface);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--text2)}
+.mode-icon svg{width:16px;height:16px}
+.mode-text{display:flex;flex-direction:column;gap:2px}
+.mode-text strong{font-size:14px;font-weight:500;color:var(--text)}
+.mode-text span{font-size:12px;color:var(--text3);line-height:1.4}
 
 /* LAYOUT */
 #app{display:flex;height:100vh;overflow:hidden}
@@ -178,17 +185,49 @@ main::-webkit-scrollbar-thumb{background:var(--border2);border-radius:4px}
 
 <!-- SETUP -->
 <div id="setup-screen">
-  <div class="setup-card">
+  <div class="setup-card" id="setup-card-main">
     <h1>Diário de Trabalho</h1>
-    <p>Configure o repositório GitHub para sincronizar seus registros entre dispositivos.</p>
-    <div class="field"><label>Usuário do GitHub</label><input type="text" id="cfg-user" placeholder="seunome" autocomplete="off" spellcheck="false"></div>
-    <div class="field"><label>Nome do repositório</label><input type="text" id="cfg-repo" placeholder="diario-trabalho" autocomplete="off" spellcheck="false"></div>
-    <div class="field"><label>Personal Access Token</label><input type="password" id="cfg-token" placeholder="ghp_xxxxxxxxxxxx" autocomplete="off"></div>
-    <div class="help">
-      <strong>GitHub → Settings → Developer settings → Personal access tokens → Tokens (classic)</strong><br>
-      Marque apenas <strong>repo</strong>. <a href="https://github.com/settings/tokens/new" target="_blank">Abrir gerador →</a>
+    <p>Como você quer guardar seus registros?</p>
+
+    <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:0">
+      <!-- Botão GitHub -->
+      <button class="mode-btn" id="mode-btn-github" onclick="showSetupGitHub()">
+        <div class="mode-icon">
+          <svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 00-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0020 4.77 5.07 5.07 0 0019.91 1S18.73.65 16 2.48a13.38 13.38 0 00-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 005 4.77a5.44 5.44 0 00-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 009 18.13V22"/></svg>
+        </div>
+        <div class="mode-text">
+          <strong>Sincronizar com GitHub</strong>
+          <span>Acesse de qualquer dispositivo.</span>
+        </div>
+        <svg id="github-arrow" style="margin-left:auto;flex-shrink:0;transition:transform .3s;color:var(--text3)" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
+      </button>
+
+      <!-- Formulário GitHub expansível -->
+      <div id="github-form" style="overflow:hidden;max-height:0;transition:max-height .35s ease;padding:0 2px">
+        <div style="padding:14px 0 4px;display:flex;flex-direction:column;gap:0">
+          <div class="field"><label>Usuário do GitHub</label><input type="text" id="cfg-user" placeholder="seunome" autocomplete="off" spellcheck="false"></div>
+          <div class="field"><label>Nome do repositório</label><input type="text" id="cfg-repo" placeholder="diario-trabalho" autocomplete="off" spellcheck="false"></div>
+          <div class="field"><label>Personal Access Token</label><input type="password" id="cfg-token" placeholder="ghp_xxxxxxxxxxxx" autocomplete="off"></div>
+          <div class="help">
+            <strong>GitHub → Settings → Developer settings → Personal access tokens → Tokens (classic)</strong><br>
+            Marque apenas <strong>repo</strong>. <a href="https://github.com/settings/tokens/new" target="_blank">Abrir gerador →</a>
+          </div>
+          <button class="btn-primary" onclick="saveConfig()">Entrar</button>
+        </div>
+      </div>
+
+      <!-- Botão local -->
+      <button class="mode-btn" onclick="startLocal()">
+        <div class="mode-icon">
+          <svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+        </div>
+        <div class="mode-text">
+          <strong>Usar localmente</strong>
+          <span>Dados salvos neste navegador.</span>
+        </div>
+        <svg style="margin-left:auto;flex-shrink:0;color:var(--text3)" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg>
+      </button>
     </div>
-    <button class="btn-primary" onclick="saveConfig()">Salvar e entrar</button>
   </div>
 </div>
 
@@ -225,6 +264,15 @@ main::-webkit-scrollbar-thumb{background:var(--border2);border-radius:4px}
         <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-2 2 2 2 0 01-2-2v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 01-2-2 2 2 0 012-2h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 010-2.83 2 2 0 012.83 0l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 012-2 2 2 0 012 2v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 0 2 2 0 010 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 012 2 2 2 0 01-2 2h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
         Config
       </button>
+      <button class="btn-sm" id="btn-backup-export" style="display:none" onclick="backupExport()">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+        Backup
+      </button>
+      <button class="btn-sm" id="btn-backup-import" style="display:none" onclick="backupImport()">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12"/></svg>
+        Restaurar
+      </button>
+      <input type="file" id="backup-file-input" accept=".json" style="display:none" onchange="backupImportFile(this)">
     </div>
   </aside>
 
@@ -382,11 +430,67 @@ let currentView = 'diario';
 const FILENAME = 'diario-data.json';
 
 // ─── INIT ─────────────────────────────────────────────────────────────────────
+let appMode = 'github'; // 'github' | 'local'
+
 window.addEventListener('DOMContentLoaded', () => {
-  const saved = localStorage.getItem('dt_config');
-  if (saved) { cfg = JSON.parse(saved); startApp(); }
   buildColorSwatches();
+  const savedMode = localStorage.getItem('dt_mode');
+  if (savedMode === 'local') {
+    appMode = 'local';
+    startLocalApp();
+  } else {
+    const saved = localStorage.getItem('dt_config');
+    if (saved) { cfg = JSON.parse(saved); appMode = 'github'; startApp(); }
+    // else: show setup screen (default)
+  }
 });
+
+function showSetupEscolha() {
+  // no-op, kept for compat
+}
+let githubFormOpen = false;
+function showSetupGitHub() {
+  githubFormOpen = !githubFormOpen;
+  const form = document.getElementById('github-form');
+  const arrow = document.getElementById('github-arrow');
+  const btn = document.getElementById('mode-btn-github');
+  if (githubFormOpen) {
+    form.style.maxHeight = form.scrollHeight + 400 + 'px';
+    arrow.style.transform = 'rotate(180deg)';
+    btn.style.borderColor = 'var(--accent)';
+    btn.style.background = 'var(--accent-bg)';
+    setTimeout(() => document.getElementById('cfg-user').focus(), 350);
+  } else {
+    form.style.maxHeight = '0';
+    arrow.style.transform = '';
+    btn.style.borderColor = '';
+    btn.style.background = '';
+  }
+}
+
+function startLocal() {
+  appMode = 'local';
+  localStorage.setItem('dt_mode', 'local');
+  const cached = localStorage.getItem('dt_data_cache');
+  if (cached) { data = JSON.parse(cached); if (!data.planos) data.planos = []; }
+  startLocalApp();
+}
+
+function startLocalApp() {
+  document.getElementById('setup-screen').classList.add('hidden');
+  document.getElementById('app').classList.remove('hidden');
+  document.getElementById('sidebar-user').textContent = 'Modo local';
+  setSyncStatus('ok', 'Dados locais');
+  // Adjust buttons for local mode
+  document.querySelectorAll('.btn-sm').forEach(b => {
+    if (b.textContent.trim().includes('Sincronizar')) b.style.display = 'none';
+  });
+  const be = document.getElementById('btn-backup-export');
+  const bi = document.getElementById('btn-backup-import');
+  if (be) be.style.display = '';
+  if (bi) bi.style.display = '';
+  renderSidebar();
+}
 
 function saveConfig() {
   const user = document.getElementById('cfg-user').value.trim();
@@ -395,6 +499,8 @@ function saveConfig() {
   if (!user || !repo || !token) { showStatus('Preencha todos os campos.', 'error'); return; }
   cfg = { user, repo, token };
   localStorage.setItem('dt_config', JSON.stringify(cfg));
+  localStorage.setItem('dt_mode', 'github');
+  appMode = 'github';
   startApp();
 }
 
@@ -456,6 +562,16 @@ async function loadFromGitHub() {
 }
 
 async function saveToGitHub() {
+  if (appMode === 'local') {
+    localStorage.setItem('dt_data_cache', JSON.stringify(data));
+    setSyncStatus('ok', 'Salvo às ' + new Date().toLocaleTimeString('pt-BR', {hour:'2-digit',minute:'2-digit'}));
+    showStatus('Salvo localmente.', 'success');
+    return;
+  }
+  return _saveToGitHub();
+}
+
+async function _saveToGitHub() {
   setSyncStatus('loading', 'Salvando…');
   try {
     const jsonStr = JSON.stringify(data, null, 2);
@@ -479,6 +595,7 @@ async function saveToGitHub() {
 }
 
 async function forceSync() {
+  if (appMode === 'local') { showStatus('Modo local — sem sincronização.', ''); return; }
   setSyncStatus('loading', 'Sincronizando…');
   await loadFromGitHub();
   renderSidebar();
@@ -894,14 +1011,86 @@ function copyExport() {
 
 // ─── SETTINGS ────────────────────────────────────────────────────────────────
 function openSettings() {
-  const u = prompt('Usuário GitHub:', cfg.user); if (u===null) return;
-  const r = prompt('Repositório:', cfg.repo); if (r===null) return;
-  const t = prompt('Token (em branco para manter):');
-  cfg.user = u.trim()||cfg.user; cfg.repo = r.trim()||cfg.repo;
-  if (t && t.trim()) cfg.token = t.trim();
-  localStorage.setItem('dt_config', JSON.stringify(cfg));
-  document.getElementById('sidebar-user').textContent = cfg.user+'/'+cfg.repo;
-  fileSha = null; forceSync();
+  if (appMode === 'local') {
+    const trocar = confirm('Você está em modo local.\nDeseja trocar para modo GitHub?');
+    if (!trocar) return;
+    appMode = 'github';
+    localStorage.removeItem('dt_mode');
+    githubFormOpen = false;
+    document.getElementById('app').classList.add('hidden');
+    document.getElementById('setup-screen').classList.remove('hidden');
+    showSetupGitHub();
+    return;
+  }
+  // Modo GitHub: oferece editar credenciais ou trocar para local
+  const escolha = confirm('Modo GitHub (' + cfg.user + '/' + cfg.repo + ')\n\nOK → Editar credenciais\nCancelar → Trocar para modo local');
+  if (escolha) {
+    const u = prompt('Usuário GitHub:', cfg.user); if (u===null) return;
+    const r = prompt('Repositório:', cfg.repo); if (r===null) return;
+    const t = prompt('Token (em branco para manter):');
+    cfg.user = u.trim()||cfg.user; cfg.repo = r.trim()||cfg.repo;
+    if (t && t.trim()) cfg.token = t.trim();
+    localStorage.setItem('dt_config', JSON.stringify(cfg));
+    document.getElementById('sidebar-user').textContent = cfg.user+'/'+cfg.repo;
+    fileSha = null; forceSync();
+  } else {
+    const confirmar = confirm('Trocar para modo local?\nOs dados do GitHub não serão apagados.');
+    if (!confirmar) return;
+    appMode = 'local';
+    localStorage.setItem('dt_mode', 'local');
+    document.getElementById('app').classList.add('hidden');
+    document.getElementById('setup-screen').classList.remove('hidden');
+    githubFormOpen = false;
+    // Reset form visual
+    const form = document.getElementById('github-form');
+    const arrow = document.getElementById('github-arrow');
+    const btn = document.getElementById('mode-btn-github');
+    if (form) form.style.maxHeight = '0';
+    if (arrow) arrow.style.transform = '';
+    if (btn) { btn.style.borderColor = ''; btn.style.background = ''; }
+  }
+}
+
+// ─── BACKUP (LOCAL MODE) ─────────────────────────────────────────────────────
+function backupExport() {
+  const json = JSON.stringify(data, null, 2);
+  const blob = new Blob([json], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'diario-backup-' + new Date().toISOString().split('T')[0] + '.json';
+  a.click();
+  URL.revokeObjectURL(url);
+  showStatus('Backup salvo.', 'success');
+}
+
+function backupImport() {
+  document.getElementById('backup-file-input').click();
+}
+
+function backupImportFile(input) {
+  const file = input.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    try {
+      const imported = JSON.parse(e.target.result);
+      if (!imported.days) throw new Error('Arquivo inválido');
+      if (!confirm('Isso vai substituir todos os dados atuais pelo backup. Confirma?')) return;
+      data = imported;
+      if (!data.planos) data.planos = [];
+      localStorage.setItem('dt_data_cache', JSON.stringify(data));
+      activeDayId = null;
+      renderSidebar();
+      document.getElementById('day-view').style.display = 'none';
+      document.getElementById('empty-state').style.display = '';
+      showStatus('Backup restaurado com sucesso.', 'success');
+    } catch(err) {
+      showStatus('Erro ao importar: ' + err.message, 'error');
+    }
+  };
+  reader.readAsText(file);
+  input.value = '';
 }
 
 // ─── HELPERS ─────────────────────────────────────────────────────────────────
