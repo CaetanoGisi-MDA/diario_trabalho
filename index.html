@@ -784,7 +784,14 @@ async function loadFromGitHub() {
     setSyncStatus('err', 'Erro: ' + e.message);
     showStatus('Erro ao carregar: ' + e.message, 'error');
     const local = localStorage.getItem('dt_data_cache');
-    if (local) { data = JSON.parse(local); if (!data.planos) data.planos = []; }
+    if (local) {
+      try {
+        data = await decryptData(local, cfg.senha || '');
+      } catch(e2) {
+        try { data = JSON.parse(local); } catch(e3) { data = { days: {}, planos: [] }; }
+      }
+      if (!data.planos) data.planos = [];
+    }
   }
 }
 
@@ -812,7 +819,8 @@ async function _saveToGitHub() {
     if (!res.ok) { const b = await res.json().catch(()=>({})); throw new Error(b.message || 'HTTP ' + res.status); }
     const json = await res.json();
     fileSha = json.content.sha;
-    localStorage.setItem('dt_data_cache', JSON.stringify(data));
+    const cachedEnc = await encryptData(data, cfg.senha || '');
+    localStorage.setItem('dt_data_cache', cachedEnc);
     setSyncStatus('ok', 'Salvo às ' + new Date().toLocaleTimeString('pt-BR', {hour:'2-digit',minute:'2-digit'}));
     showStatus('Salvo e sincronizado.', 'success');
   } catch(e) {
